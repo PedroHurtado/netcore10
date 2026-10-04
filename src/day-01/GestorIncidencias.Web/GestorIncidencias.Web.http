@@ -1,0 +1,59 @@
+### Peticiones de prueba (Visual Studio / VS Code con extensión REST Client)
+@host = http://localhost:5196
+
+### Listar incidencias
+GET {{host}}/api/incidencias
+
+### Obtener una incidencia
+GET {{host}}/api/incidencias/1
+
+### Incidencia inexistente → 404
+GET {{host}}/api/incidencias/999
+
+### Crear incidencia
+POST {{host}}/api/incidencias
+Content-Type: application/json
+
+{
+  "titulo": "No funciona la VPN desde casa",
+  "descripcion": "Error de certificado al conectar",
+  "prioridad": "Alta"
+}
+
+### Crear incidencia sin prioridad → usa PrioridadPorDefecto de la configuración
+POST {{host}}/api/incidencias
+Content-Type: application/json
+
+{
+  "titulo": "Solicitud de nuevo monitor"
+}
+
+### Crear incidencia NO válida → 400 ValidationProblem
+POST {{host}}/api/incidencias
+Content-Type: application/json
+
+{
+  "titulo": "abc"
+}
+
+### Resolver incidencia
+POST {{host}}/api/incidencias/1/resolver
+
+### Enviar nuestro propio Correlation Id
+GET {{host}}/info
+X-Correlation-Id: mi-peticion-123
+
+### Demos (solo Development)
+GET {{host}}/demo/lifetimes
+
+###
+GET {{host}}/demo/opciones
+
+###
+GET {{host}}/demo/configuracion
+
+###
+GET {{host}}/demo/error
+
+### Rama del pipeline
+GET {{host}}/ping

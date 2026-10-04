@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestor de Incidencias</title>
+    <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+    <h1>Gestor de Incidencias</h1>
+    <p>Fichero estático servido por <code>UseStaticFiles()</code> desde <code>wwwroot/</code>.</p>
+
+    <h2>Incidencias</h2>
+    <ul id="lista"><li>Cargando…</li></ul>
+
+    <h2>Enlaces útiles</h2>
+    <ul>
+        <li><a href="/api/incidencias">GET /api/incidencias</a></li>
+        <li><a href="/info">GET /info</a></li>
+        <li><a href="/ping">GET /ping</a> (rama con <code>app.Map</code>)</li>
+        <li><a href="/demo/lifetimes">GET /demo/lifetimes</a> (solo Development)</li>
+        <li><a href="/demo/opciones">GET /demo/opciones</a> (solo Development)</li>
+        <li><a href="/demo/configuracion">GET /demo/configuracion</a> (solo Development)</li>
+        <li><a href="/openapi/v1.json">OpenAPI</a> (solo Development)</li>
+    </ul>
+
+    <script>
+        // Consumimos la API REST desde el navegador.
+        fetch('/api/incidencias')
+            .then(r => r.json())
+            .then(datos => {
+                const ul = document.getElementById('lista');
+                ul.innerHTML = datos.length === 0
+                    ? '<li>No hay incidencias</li>'
+                    : datos.map(i => `<li><strong>#${i.id}</strong> [${i.prioridad}] ${i.titulo} — <em>${i.estado}</em></li>`).join('');
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+# Curso: Desarrollo en ASP.NET Core
+
+Curso de 25 horas (5 días × 5 horas, de 9:00 a 14:00) que combina **teoría y práctica**.
+El material se construye de forma **incremental**: cada día parte del proyecto del día anterior.
+
+## Estructura del repositorio
+
+```
+docs/
+  README.md            ← planificación general del curso
+  day-01/              ← teoría y laboratorios del día 1
+  day-02/ ...          ← (se irán añadiendo)
+src/
+  day-01/              ← proyecto de ejemplo al FINAL del día 1
+  day-02/ ...          ← cada día es una copia evolucionada del anterior
+```
+
+## Requisitos
+
+- .NET SDK 10 (`dotnet --list-sdks` debe mostrar una versión 10.x)
+- Visual Studio 2026 / Visual Studio Code con C# Dev Kit / JetBrains Rider
+- Navegador y, opcionalmente, la extensión REST Client (VS Code) para los ficheros `.http`
+
+No hace falta instalar ningún servidor de base de datos: usamos **EF Core con el proveedor InMemory**.
+
+## Cómo ejecutar el ejemplo de un día
+
+```bash
+cd src/day-01
+dotnet run --project GestorIncidencias.Web
+```
+
+Abre http://localhost:5196
