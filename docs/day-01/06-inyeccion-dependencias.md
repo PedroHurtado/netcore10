@@ -134,7 +134,7 @@ builder.Services.AddDbContext<IncidenciasDbContext>(opt => opt.UseInMemoryDataba
 
 - `AddDbContext` registra el contexto como **Scoped**.
 - Por eso `EfIncidenciaRepository` también es Scoped.
-- Limitaciones de InMemory: no es relacional (no hay restricciones de clave foránea ni transacciones reales, no ejecuta SQL). Profundizaremos en el día 3.
+- Limitaciones de InMemory: no es una base de datos relacional, las transacciones no se admiten y no ejecuta SQL. Microsoft **desaconseja usarlo para pruebas** (no reproduce el comportamiento de la base de datos real); en este curso lo usamos solo para no depender de un servidor. Profundizaremos en el día 3.
 
 ## 6.8 Beneficio inmediato: sustitución
 
@@ -145,3 +145,25 @@ Gracias a `IIncidenciaRepository`, podemos cambiar EF Core por otra implementaci
 1. ¿Qué lifetime le darías a un servicio que guarda el usuario autenticado de la petición actual?
 2. ¿Por qué `DatosDemoInitializer` no recibe `IIncidenciaRepository` en el constructor?
 3. ¿Por qué se inyecta `TimeProvider` en lugar de usar `DateTimeOffset.UtcNow` directamente?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+**Documentación oficial**
+
+- [Inserción de dependencias en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-10.0) — Registro, lifetimes y servicios con claves.
+- [Inserción de dependencias en .NET](https://learn.microsoft.com/es-es/dotnet/core/extensions/dependency-injection/overview) — El contenedor `Microsoft.Extensions.DependencyInjection` en detalle, incluida la validación del ámbito.
+- [Instrucciones para la inserción de dependencias](https://learn.microsoft.com/es-es/dotnet/core/extensions/dependency-injection/guidelines) — Buenas prácticas y antipatrones (dependencias cautivas, *service locator*, `IDisposable`).
+- [Host web: `ValidateScopes` en Development](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/host/web-host?view=aspnetcore-10.0) — La validación de ámbitos se activa cuando el entorno es Development.
+- [Tareas en segundo plano con servicios hospedados](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-10.0) y [Uso de servicios con ámbito dentro de un servicio en segundo plano](https://learn.microsoft.com/es-es/dotnet/core/extensions/scoped-service) — El patrón `IServiceScopeFactory` de `DatosDemoInitializer`.
+- [Duración, configuración e inicialización de DbContext](https://learn.microsoft.com/es-es/ef/core/dbcontext-configuration/) — Por qué el `DbContext` es Scoped.
+- [Proveedor de bases de datos en memoria de EF Core](https://learn.microsoft.com/es-es/ef/core/providers/in-memory/) — Incluye la advertencia de que no se recomienda para pruebas.
+- [Elección de una estrategia de pruebas con EF Core](https://learn.microsoft.com/es-es/ef/core/testing/choosing-a-testing-strategy) — Limitaciones de InMemory (transacciones, SQL sin formato) y alternativas.
+- [¿Qué es la clase `TimeProvider`?](https://learn.microsoft.com/es-es/dotnet/standard/datetime/timeprovider-overview) — Abstracción del tiempo incluida desde .NET 8.
+- [Constructores principales (C# 12)](https://learn.microsoft.com/es-es/dotnet/csharp/whats-new/tutorials/primary-constructors)
+- [Principios arquitectónicos](https://learn.microsoft.com/es-es/dotnet/architecture/modern-web-apps-azure/architectural-principles) — Inversión de dependencias y separación de responsabilidades.
+
+**Lectura clásica**
+
+- Martin Fowler, [Inversion of Control Containers and the Dependency Injection pattern](https://martinfowler.com/articles/injection.html) (inglés) — Artículo que popularizó el término "inyección de dependencias".

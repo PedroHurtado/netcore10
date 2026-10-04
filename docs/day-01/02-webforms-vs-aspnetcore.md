@@ -113,3 +113,21 @@ Cada pieza tiene una responsabilidad, se puede sustituir (el repositorio) y se p
 1. ¿Qué problema resolvía el ViewState y por qué ASP.NET Core no lo necesita?
 2. ¿Dónde pondrías en ASP.NET Core el código que en Web Forms estaba en `Application_BeginRequest`?
 3. En el ejemplo de Web Forms, ¿qué partes del código serían reaprovechables en una migración?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+**Documentación oficial**
+
+- [Información general de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/overview?view=aspnetcore-10.0) — Por qué elegir ASP.NET Core y en qué se diferencia de ASP.NET 4.x.
+- [Migración de ASP.NET Framework a ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/migration/fx-to-core/?view=aspnetcore-10.0) — Guía oficial de migración: enfoques completos e incrementales.
+- [Migración de módulos HTTP a middleware de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/migration/fx-to-core/areas/http-modules?view=aspnetcore-10.0) — Equivalencia `HttpModule`/`Global.asax` → middleware.
+- [Sesión y estado en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/app-state?view=aspnetcore-10.0) — Alternativas a Session y ViewState.
+- [ASP.NET Web Forms](https://learn.microsoft.com/es-es/aspnet/web-forms/) — Documentación del modelo original (referencia para analizar aplicaciones legacy).
+- [Blazor para desarrolladores de ASP.NET Web Forms](https://learn.microsoft.com/es-es/dotnet/architecture/blazor-for-web-forms-developers/) — Libro electrónico gratuito de Microsoft con la correspondencia de conceptos Web Forms → ASP.NET Core (ciclo de vida, controles, estado, configuración, seguridad).
+
+**Herramientas y proyectos**
+
+- [dotnet/systemweb-adapters](https://github.com/dotnet/systemweb-adapters) — Adaptadores oficiales de `System.Web` para migraciones incrementales.
+- [CoreWCF](https://github.com/CoreWCF/CoreWCF) — Implementación de WCF servidor para .NET moderno.

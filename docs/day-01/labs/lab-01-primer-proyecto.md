@@ -118,3 +118,16 @@ Ejecuta `dotnet watch`, cambia el texto de `index.html` o el de un endpoint y gu
 
 - ¿Qué pasaría con la lista estática si dos usuarios hacen `POST` a la vez?
 - ¿Qué tiene de malo que la lógica de crear la incidencia esté dentro de la *lambda* del endpoint? (Piensa en el `Button_Click` de Web Forms.)
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+- [Tutorial: Creación de una API mínima con ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/tutorials/min-web-api?view=aspnetcore-10.0) — Tutorial oficial paso a paso, muy próximo a este laboratorio.
+- [Plantillas predeterminadas de `dotnet new`](https://learn.microsoft.com/es-es/dotnet/core/tools/dotnet-new-sdk-templates) — `web`, `webapi`, `mvc`, `webapp`, `sln`...
+- [Controladores de ruta en API mínimas](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis/route-handlers?view=aspnetcore-10.0) — `MapGet`, `MapPost`, nombres de endpoint y grupos de rutas.
+- [Enlace de parámetros en API mínimas](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis/parameter-binding?view=aspnetcore-10.0) — De dónde sale cada parámetro (ruta, cuerpo, servicios).
+- [Creación de respuestas en API mínimas](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-10.0) — `Results.CreatedAtRoute`, `Results.NotFound`...
+- [Archivos estáticos](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/static-files?view=aspnetcore-10.0) — `UseDefaultFiles` y `UseStaticFiles`.
+- [Uso de archivos .http](https://learn.microsoft.com/es-es/aspnet/core/test/http-files?view=aspnetcore-10.0)
+- [`dotnet watch`](https://learn.microsoft.com/es-es/dotnet/core/tools/dotnet-watch) y [Recarga activa](https://learn.microsoft.com/es-es/aspnet/core/test/hot-reload?view=aspnetcore-10.0)

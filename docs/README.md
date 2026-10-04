@@ -22,3 +22,12 @@ La distribución de los días 2 a 5 es orientativa y se ajustará al ritmo del g
 ## Índice de material
 
 - [Día 1 — Introducción y fundamentos](day-01/README.md)
+
+## Referencias generales
+
+> Enlaces comprobados el 4 de octubre de 2026. Cada documento del curso incluye sus propias referencias.
+
+- [Documentación de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/?view=aspnetcore-10.0) — Documentación oficial en español.
+- [Directiva de soporte técnico oficial de .NET](https://dotnet.microsoft.com/es-es/platform/support/policy/dotnet-core) — .NET 10 es la versión LTS vigente (soporte hasta el 14/11/2028).
+- [Migración de ASP.NET Framework a ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/migration/fx-to-core/?view=aspnetcore-10.0) — Guía oficial de migración (Módulo 3).
+- [Documentación de Entity Framework Core](https://learn.microsoft.com/es-es/ef/core/) — Acceso a datos (Módulo 4).

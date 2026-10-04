@@ -62,7 +62,7 @@ dotnet run -- --Incidencias:MaxIncidenciasAbiertas=10
 
 ## 7.3 Entornos
 
-La variable `ASPNETCORE_ENVIRONMENT` (o `DOTNET_ENVIRONMENT`) determina el entorno. Valores convencionales: `Development`, `Staging`, `Production`. **Si no está definida, el entorno es `Production`** (por seguridad).
+Las variables `ASPNETCORE_ENVIRONMENT` y `DOTNET_ENVIRONMENT` determinan el entorno (con `WebApplication`, si están las dos, gana `DOTNET_ENVIRONMENT`). Valores convencionales: `Development`, `Staging`, `Production`. **Si no está definida ninguna, el entorno es `Production`** (por seguridad).
 
 ```csharp
 if (app.Environment.IsDevelopment()) { app.MapOpenApi(); app.MapDemos(); }
@@ -140,3 +140,21 @@ builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, relo
 1. Si `MaxIncidenciasAbiertas` vale 50 en `appsettings.json`, 5 en `appsettings.Development.json` y hay una variable de entorno `Incidencias__MaxIncidenciasAbiertas=20`, ¿qué valor ve la aplicación en Development?
 2. ¿Qué ocurre si se publica en un servidor sin definir `ASPNETCORE_ENVIRONMENT`?
 3. ¿Qué interfaz de opciones usarías dentro de un middleware por convención si quieres ver cambios sin reiniciar?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+**Documentación oficial**
+
+- [Configuración en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/configuration/?view=aspnetcore-10.0) — Orden de prioridad de las fuentes predeterminadas y separador `__` en variables de entorno.
+- [Configuración en .NET](https://learn.microsoft.com/es-es/dotnet/core/extensions/configuration) — Proveedores de configuración fuera de ASP.NET Core.
+- [Patrón de opciones en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/configuration/options?view=aspnetcore-10.0) — `IOptions` / `IOptionsSnapshot` / `IOptionsMonitor`, validación y `ValidateOnStart`.
+- [Patrón de opciones en .NET](https://learn.microsoft.com/es-es/dotnet/core/extensions/options)
+- [Entornos de tiempo de ejecución](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/environments?view=aspnetcore-10.0) — `ASPNETCORE_ENVIRONMENT`/`DOTNET_ENVIRONMENT` y entorno `Production` por defecto.
+- [Almacenamiento seguro de secretos en desarrollo (User Secrets)](https://learn.microsoft.com/es-es/aspnet/core/security/app-secrets?view=aspnetcore-10.0) — Ubicación en Windows: `%APPDATA%\Microsoft\UserSecrets\<id>\secrets.json`.
+- [Proveedor de configuración de Azure Key Vault](https://learn.microsoft.com/es-es/aspnet/core/security/key-vault-configuration?view=aspnetcore-10.0) — Secretos en producción.
+
+**Buenas prácticas**
+
+- [The Twelve-Factor App — III. Configuración](https://12factor.net/es/config) — Principio de separar la configuración del código y guardarla en el entorno.

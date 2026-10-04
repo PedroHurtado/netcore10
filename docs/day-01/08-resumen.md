@@ -42,3 +42,13 @@ Partiremos de `src/day-01` y lo convertiremos en `src/day-02`:
 2. **Controladores MVC y vistas**: interfaz web para listar, crear y resolver incidencias.
 3. **Razor Pages**: la misma funcionalidad con el modelo de páginas y comparación con Web Forms.
 4. **Controladores API** frente a Minimal APIs y validación automática del modelo.
+
+## Referencias generales
+
+> Enlaces comprobados el 4 de octubre de 2026. Las referencias específicas de cada tema están al final de su documento.
+
+- [Documentación de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/?view=aspnetcore-10.0) — Portal de entrada a la documentación oficial.
+- [Conceptos básicos de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/?view=aspnetcore-10.0) — Todos los temas de hoy en un único índice.
+- [Tutorial: Creación de una API mínima con ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/tutorials/min-web-api?view=aspnetcore-10.0) — Tutorial oficial equivalente al proyecto del día 1, para repasar.
+- [Novedades de ASP.NET Core en .NET 10](https://learn.microsoft.com/es-es/aspnet/core/release-notes/aspnetcore-10.0?view=aspnetcore-10.0)
+- [dotnet/aspnetcore en GitHub](https://github.com/dotnet/aspnetcore) — Código fuente, incidencias y planificación del framework.

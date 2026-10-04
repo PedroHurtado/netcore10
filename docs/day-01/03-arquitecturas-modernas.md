@@ -132,3 +132,25 @@ En el **Gestor de Incidencias** empezamos hoy por la **API REST** (es lo que men
 1. ¿Qué código devuelve un `POST` que crea un recurso y qué cabecera debe incluir?
 2. Un compañero propone migrar una aplicación Web Forms de 40 formularios de mantenimiento. ¿MVC o Razor Pages? ¿Por qué?
 3. ¿Se pueden tener controladores MVC, Razor Pages y Minimal APIs en la misma aplicación?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+**Documentación oficial**
+
+- [Elección de una interfaz de usuario de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/tutorials/choose-web-ui?view=aspnetcore-10.0) — Comparativa oficial entre MVC, Razor Pages y Blazor.
+- [Información general de ASP.NET Core MVC](https://learn.microsoft.com/es-es/aspnet/core/mvc/overview?view=aspnetcore-10.0)
+- [Arquitectura y conceptos de Razor Pages](https://learn.microsoft.com/es-es/aspnet/core/razor-pages/?view=aspnetcore-10.0)
+- [Introducción a las API: Minimal APIs frente a controladores](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/apis?view=aspnetcore-10.0) — Cuándo elegir cada estilo.
+- [Referencia rápida de las API mínimas](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-10.0)
+- [Creación de API web con controladores](https://learn.microsoft.com/es-es/aspnet/core/web-api/?view=aspnetcore-10.0)
+- [Creación de respuestas en API mínimas](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-10.0) — `Results.Ok`, `Results.NotFound`, `Results.Problem`...
+- [Control de errores en las API de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/error-handling-api?view=aspnetcore-10.0) — ProblemDetails.
+- [Blazor de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/blazor/?view=aspnetcore-10.0)
+- [Procedimientos recomendados de diseño de API web](https://learn.microsoft.com/es-es/azure/architecture/best-practices/api-design) (Azure Architecture Center) — Recursos, verbos, códigos de estado, paginación y versionado.
+
+**Estándares**
+
+- [RFC 9110 — HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) (inglés) — Definición normativa de los métodos (§9) y de los códigos de estado (§15), como `201 Created` con `Location`.
+- [RFC 9457 — Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457) (inglés) — Formato estándar de errores que genera `AddProblemDetails`.

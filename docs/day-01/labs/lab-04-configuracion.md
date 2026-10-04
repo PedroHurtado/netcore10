@@ -110,3 +110,12 @@ dotnet run -- --Incidencias:MaxIncidenciasAbiertas=30
 ## Para reflexionar
 
 - ¿Qué valores de los `web.config` de vuestras aplicaciones actuales deberían ser opciones tipadas y cuáles secretos?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+- [Configuración en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/configuration/?view=aspnetcore-10.0) — Prioridad de fuentes, variables de entorno con `__` y línea de comandos.
+- [Patrón de opciones en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/configuration/options?view=aspnetcore-10.0) — `ValidateDataAnnotations`, `ValidateOnStart` y recarga en caliente.
+- [Entornos de tiempo de ejecución](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/environments?view=aspnetcore-10.0)
+- [Almacenamiento seguro de secretos en desarrollo (User Secrets)](https://learn.microsoft.com/es-es/aspnet/core/security/app-secrets?view=aspnetcore-10.0) — Respuesta a la pregunta del reto.

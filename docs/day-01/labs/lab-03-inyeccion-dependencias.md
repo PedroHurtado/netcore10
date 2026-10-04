@@ -114,3 +114,16 @@ Copia `Lifetimes/Operaciones.cs` de la solución, registra las tres variantes y 
 
 - ¿Cuántos `new` de clases de negocio quedan en tu código? ¿Quién crea ahora los objetos?
 - ¿Cómo probarías `IncidenciaService.ResolverAsync` sin base de datos y controlando la fecha?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+- [Inserción de dependencias en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-10.0)
+- [Instrucciones para la inserción de dependencias](https://learn.microsoft.com/es-es/dotnet/core/extensions/dependency-injection/guidelines) — Dependencias cautivas y otros antipatrones.
+- [Proveedor de bases de datos en memoria de EF Core](https://learn.microsoft.com/es-es/ef/core/providers/in-memory/)
+- [Duración, configuración e inicialización de DbContext](https://learn.microsoft.com/es-es/ef/core/dbcontext-configuration/)
+- [Uso de servicios con ámbito dentro de un servicio en segundo plano](https://learn.microsoft.com/es-es/dotnet/core/extensions/scoped-service) — Solución del paso 6.
+- [Tareas en segundo plano con servicios hospedados](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-10.0)
+- [Grupos de rutas (`MapGroup`)](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis/route-handlers?view=aspnetcore-10.0#route-groups)
+- [¿Qué es la clase `TimeProvider`?](https://learn.microsoft.com/es-es/dotnet/standard/datetime/timeprovider-overview)

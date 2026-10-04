@@ -148,3 +148,28 @@ Por ahora todo vive en un único proyecto, organizado por carpetas. El día 2 lo
 1. ¿Dónde se configura el entorno con el que arranca la aplicación en desarrollo?
 2. ¿Qué diferencia hay entre `builder.Services` y `app.Use...`?
 3. ¿Se publica `launchSettings.json` al desplegar? ¿Cómo se fija el entorno en un servidor?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+**Documentación oficial**
+
+- [Información general de los conceptos básicos de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/?view=aspnetcore-10.0) — Mapa de todos los fundamentos (host, DI, middleware, configuración...).
+- [WebApplication y WebApplicationBuilder](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/minimal-apis/webapplication?view=aspnetcore-10.0) — Qué configura `CreateBuilder` por defecto y qué middleware añade automáticamente.
+- [Host genérico de .NET en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-10.0)
+- [Migración de .NET 5 a .NET 6](https://learn.microsoft.com/es-es/aspnet/core/migration/50-to-60?view=aspnetcore-10.0) — Paso de `Startup.cs` al modelo de hosting mínimo.
+- [Información general sobre el SDK de proyectos de .NET](https://learn.microsoft.com/es-es/dotnet/core/project-sdk/overview) — `Microsoft.NET.Sdk.Web` y [directivas `using` implícitas](https://learn.microsoft.com/es-es/dotnet/core/project-sdk/overview#implicit-using-directives).
+- [Tipos de referencia anulables](https://learn.microsoft.com/es-es/dotnet/csharp/fundamentals/null-safety/nullable-reference-types) — Qué activa `<Nullable>enable</Nullable>`.
+- [Plantillas predeterminadas de `dotnet new`](https://learn.microsoft.com/es-es/dotnet/core/tools/dotnet-new-sdk-templates) — Indica que a partir de .NET 10 el formato de solución predeterminado es `.slnx`.
+- [Servidor web Kestrel](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-10.0) e [Implementaciones de servidores web](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/servers/?view=aspnetcore-10.0)
+- [Hospedaje de ASP.NET Core en Windows con IIS](https://learn.microsoft.com/es-es/aspnet/core/host-and-deploy/iis/?view=aspnetcore-10.0) y [Módulo ASP.NET Core (ANCM)](https://learn.microsoft.com/es-es/aspnet/core/host-and-deploy/aspnet-core-module?view=aspnetcore-10.0) — Hospedaje en proceso (predeterminado) y fuera de proceso.
+- [Entornos y `launchSettings.json`](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/environments?view=aspnetcore-10.0)
+- [Archivos estáticos](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/static-files?view=aspnetcore-10.0)
+- [Recarga activa (Hot Reload)](https://learn.microsoft.com/es-es/aspnet/core/test/hot-reload?view=aspnetcore-10.0) y [`dotnet watch`](https://learn.microsoft.com/es-es/dotnet/core/tools/dotnet-watch)
+- [Uso de archivos .http](https://learn.microsoft.com/es-es/aspnet/core/test/http-files?view=aspnetcore-10.0)
+- [Introducción a la publicación de aplicaciones .NET](https://learn.microsoft.com/es-es/dotnet/core/deploying/) — Despliegue dependiente del framework frente a autocontenido.
+
+**Blog oficial**
+
+- [Introducing support for SLNX](https://devblogs.microsoft.com/dotnet/introducing-slnx-support-dotnet-cli/) (inglés) — El nuevo formato de solución `.slnx`.

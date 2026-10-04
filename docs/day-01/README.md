@@ -71,3 +71,11 @@ dotnet run --project GestorIncidencias.Web
 | /demo/configuracion | Fuentes de configuración y entorno (solo Development) |
 | /demo/error | Excepción de prueba (página de error distinta según el entorno) |
 | /openapi/v1.json | Documento OpenAPI (solo Development) |
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026. Cada documento de teoría y cada laboratorio tiene su propia sección de referencias.
+
+- [Documentación de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/?view=aspnetcore-10.0) — Documentación oficial (en español).
+- [Conceptos básicos de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/?view=aspnetcore-10.0)
+- [Directiva de soporte de .NET](https://dotnet.microsoft.com/es-es/platform/support/policy/dotnet-core) — Versión LTS vigente y fechas de soporte.

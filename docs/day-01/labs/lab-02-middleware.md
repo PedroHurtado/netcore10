@@ -126,3 +126,15 @@ app.MapGet("/demo/error", () => { throw new InvalidOperationException("Error de 
 ## Para reflexionar
 
 - ¿Qué `HttpModule` o código de `Global.asax` de tus aplicaciones actuales podrías convertir en middleware?
+
+## Referencias
+
+> Enlaces comprobados el 4 de octubre de 2026.
+
+- [Middleware de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/middleware/?view=aspnetcore-10.0) — `Use`, `Run`, `Map`, `MapWhen` y orden recomendado.
+- [Escribir middleware personalizado](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/middleware/write?view=aspnetcore-10.0)
+- [Activación de middleware basada en factoría (`IMiddleware`)](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/middleware/extensibility?view=aspnetcore-10.0)
+- [`HttpResponse.OnStarting`](https://learn.microsoft.com/es-es/dotnet/api/microsoft.aspnetcore.http.httpresponse.onstarting?view=aspnetcore-10.0)
+- [Registro de eventos: ámbitos de registro](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/logging/?view=aspnetcore-10.0) — `BeginScope` e `IncludeScopes`.
+- [Controlar errores en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0) y [Control de errores en las API](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/error-handling-api?view=aspnetcore-10.0)
+- [RFC 9110 §5.5 — Field Values](https://www.rfc-editor.org/rfc/rfc9110#section-5.5) (inglés) — Por qué las cabeceras deben ser ASCII.
