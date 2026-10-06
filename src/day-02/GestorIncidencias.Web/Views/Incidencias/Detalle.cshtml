@@ -1,0 +1,51 @@
+@model IncidenciaDto
+@{
+    ViewData["Title"] = $"Incidencia {Model.Id}";
+}
+
+<p><a asp-action="Index">← Volver al listado</a></p>
+
+<h1>#@Model.Id · @Model.Titulo</h1>
+
+<dl class="ficha">
+    <dt>Estado</dt>
+    <dd><partial name="_Estado" model="Model.Estado" /></dd>
+
+    <dt>Prioridad</dt>
+    <dd class="prioridad-@Model.Prioridad.ToString().ToLowerInvariant()">@Model.Prioridad</dd>
+
+    <dt>Descripción</dt>
+    <dd>@(Model.Descripcion ?? "—")</dd>
+
+    <dt>Fecha de alta</dt>
+    <dd>@Model.FechaAlta.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt>Fecha de resolución</dt>
+    <dd>@(Model.FechaResolucion?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+</dl>
+
+@*
+    Cada acción es un pequeño formulario POST (cambia datos → nunca con GET).
+    El Tag Helper <form> añade automáticamente el campo oculto __RequestVerificationToken (antiforgery).
+    La vista solo decide QUÉ botones enseñar; si alguien fuerza el POST, el dominio lo rechaza igualmente.
+*@
+<div class="acciones">
+    @if (Model.Estado == EstadoIncidencia.Abierta)
+    {
+        <form asp-action="Iniciar" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="boton-secundario">Iniciar</button>
+        </form>
+    }
+    @if (Model.Estado is EstadoIncidencia.Abierta or EstadoIncidencia.EnCurso)
+    {
+        <form asp-action="Resolver" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="boton">Resolver</button>
+        </form>
+    }
+    @if (Model.Estado == EstadoIncidencia.Resuelta)
+    {
+        <form asp-action="Cerrar" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="boton-secundario">Cerrar</button>
+        </form>
+    }
+</div>

@@ -1,0 +1,46 @@
+@model PanelViewModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<h1>@Model.NombreAplicacion</h1>
+
+<div class="panel">
+    <a class="tarjeta" asp-controller="Incidencias" asp-action="Index">
+        <span class="cifra">@Model.Total</span> incidencias en total
+    </a>
+    <a class="tarjeta" asp-controller="Incidencias" asp-action="Index" asp-route-estado="@EstadoIncidencia.Abierta">
+        <span class="cifra">@Model.Abiertas</span> abiertas
+    </a>
+    <a class="tarjeta" asp-controller="Incidencias" asp-action="Index" asp-route-estado="@EstadoIncidencia.EnCurso">
+        <span class="cifra">@Model.EnCurso</span> en curso
+    </a>
+    <div class="tarjeta @(Model.CriticasPendientes > 0 ? "tarjeta-alerta" : "")">
+        <span class="cifra">@Model.CriticasPendientes</span> críticas pendientes
+    </div>
+</div>
+
+<h2>La misma aplicación, tres interfaces</h2>
+<table>
+    <thead>
+        <tr><th>Interfaz</th><th>Dónde está el código</th><th>Probar</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>MVC (controlador + vistas)</td>
+            <td><code>Controllers/IncidenciasController.cs</code> + <code>Views/Incidencias/</code></td>
+            <td><a asp-controller="Incidencias" asp-action="Index">/Incidencias</a></td>
+        </tr>
+        <tr>
+            <td>Razor Pages</td>
+            <td><code>Pages/Paginas/Incidencias/</code></td>
+            <td><a asp-page="/Paginas/Incidencias/Index">/Paginas/Incidencias</a></td>
+        </tr>
+        <tr>
+            <td>API REST (controlador API)</td>
+            <td><code>Controllers/Api/IncidenciasApiController.cs</code></td>
+            <td><a href="/api/incidencias">/api/incidencias</a></td>
+        </tr>
+    </tbody>
+</table>
+<p>Las tres usan el mismo <code>IIncidenciaService</code> (proyecto <code>GestorIncidencias.Application</code>).</p>

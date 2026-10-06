@@ -1,0 +1,9 @@
+@* Vista parcial: muestra los mensajes que deja el controlador en TempData antes de redirigir *@
+@if (TempData["Mensaje"] is string mensaje)
+{
+    <div class="aviso aviso-ok">@mensaje</div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="aviso aviso-error">@error</div>
+}

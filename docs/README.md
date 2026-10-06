@@ -14,7 +14,7 @@ La distribución de los días 2 a 5 es orientativa y se ajustará al ritmo del g
 | Día | Módulos del temario | Contenido | Proyecto al final del día |
 |---|---|---|---|
 | **1** | M1 completo + M2 (1ª parte) | Evolución de .NET · Web Forms vs ASP.NET Core · MVC, Razor Pages y API REST · Estructura de un proyecto · Middleware y pipeline · Inyección de dependencias · Configuración, opciones y entornos | API REST con Minimal APIs, middleware propio, DI, opciones y EF Core InMemory |
-| **2** | M2 (2ª parte) | Controladores y vistas (MVC) · Razor Pages: cuándo usarlas · Clean Architecture | Solución en capas (Domain / Application / Infrastructure / Web) con interfaz MVC y Razor Pages |
+| **2** | M2 (2ª parte) | Clean Architecture · Hexagonal vs Clean vs Vertical Slice · Controladores MVC y vistas Razor · Razor Pages y controladores API. *Día con más teoría y demostración; laboratorios muy guiados* | Solución en capas (Domain / Application / Infrastructure / Web) con interfaz MVC, Razor Pages y API sobre los mismos casos de uso |
 | **3** | M4 + M3 (1ª parte) | EF Core: configuración, relaciones y migraciones · Patrones de acceso a datos · De DataSet/DataTable a EF Core · Rendimiento de consultas · Análisis de aplicaciones legacy y estrategias de migración | Persistencia completa con EF Core; inicio del análisis de SIREI |
 | **4** | M3 (2ª parte) + M5 + M6 | Web Forms → Razor/MVC: controles, eventos, estado (Session/ViewState) · Herramientas de Microsoft · Migración desde MVC 5 · Autenticación y autorización, Identity, OAuth2/OIDC · CSRF y XSS · Logging, rendimiento y pruebas | Aplicación securizada con Identity, logging estructurado y pruebas |
 | **5** | M7 (caso práctico) | Migración guiada de SIREI (Web Forms) y Noticom (MVC) · Ejercicios de controladores, vistas y servicios · Resolución de problemas comunes | Aplicaciones migradas |
@@ -22,6 +22,7 @@ La distribución de los días 2 a 5 es orientativa y se ajustará al ritmo del g
 ## Índice de material
 
 - [Día 1 — Introducción y fundamentos](day-01/README.md)
+- [Día 2 — Clean Architecture y MVC con Razor](day-02/README.md)
 
 ## Referencias generales
 

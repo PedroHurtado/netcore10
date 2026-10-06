@@ -1,0 +1,36 @@
+@page
+@model CrearModel
+@{
+    ViewData["Title"] = "Nueva incidencia (Razor Pages)";
+}
+
+<h1>Nueva incidencia <small>· Razor Pages</small></h1>
+
+@* Sin asp-action: el formulario se envía a la propia página y ejecuta OnPostAsync *@
+<form method="post" class="formulario">
+    <div asp-validation-summary="ModelOnly" class="errores"></div>
+
+    <div class="campo">
+        <label asp-for="Formulario.Titulo"></label>
+        <input asp-for="Formulario.Titulo" autofocus />
+        <span asp-validation-for="Formulario.Titulo" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Formulario.Descripcion"></label>
+        <textarea asp-for="Formulario.Descripcion" rows="4"></textarea>
+        <span asp-validation-for="Formulario.Descripcion" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Formulario.Prioridad"></label>
+        <select asp-for="Formulario.Prioridad" asp-items="Html.GetEnumSelectList<Prioridad>()">
+            <option value="">(la de la configuración)</option>
+        </select>
+    </div>
+
+    <div class="acciones">
+        <button type="submit" class="boton">Crear</button>
+        <a asp-page="Index">Cancelar</a>
+    </div>
+</form>

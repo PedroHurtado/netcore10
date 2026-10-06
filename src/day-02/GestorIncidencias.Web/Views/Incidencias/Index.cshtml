@@ -1,0 +1,57 @@
+@* Vista fuertemente tipada: @model indica el tipo de "Model" (IntelliSense y errores en compilación) *@
+@model ListadoIncidenciasViewModel
+@{
+    ViewData["Title"] = "Incidencias";
+}
+
+<h1>Incidencias</h1>
+
+<div class="barra">
+    @* Formulario GET: los filtros viajan en la URL (/Incidencias?estado=Abierta) *@
+    <form asp-action="Index" method="get" class="filtro">
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado">
+            <option value="">(todos)</option>
+            @foreach (var estado in Enum.GetValues<EstadoIncidencia>())
+            {
+                @* Razor solo pinta "selected" si la expresión es true *@
+                <option value="@estado" selected="@(Model.FiltroEstado == estado)">@estado</option>
+            }
+        </select>
+        <button type="submit" class="boton-secundario">Filtrar</button>
+    </form>
+
+    <a class="boton" asp-action="Crear">+ Nueva incidencia</a>
+</div>
+
+@if (Model.Incidencias.Count == 0)
+{
+    <p class="vacio">No hay incidencias@(Model.FiltroEstado is null ? "" : $" en estado {Model.FiltroEstado}").</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Título</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Alta</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var incidencia in Model.Incidencias)
+            {
+                <tr>
+                    <td>@incidencia.Id</td>
+                    @* Razor codifica en HTML todo lo que escribe con @ → protección frente a XSS *@
+                    <td><a asp-action="Detalle" asp-route-id="@incidencia.Id">@incidencia.Titulo</a></td>
+                    <td class="prioridad-@incidencia.Prioridad.ToString().ToLowerInvariant()">@incidencia.Prioridad</td>
+                    <td><partial name="_Estado" model="incidencia.Estado" /></td>
+                    <td>@incidencia.FechaAlta.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -9,10 +9,12 @@ El material se construye de forma **incremental**: cada día parte del proyecto 
 docs/
   README.md            ← planificación general del curso
   day-01/              ← teoría y laboratorios del día 1
-  day-02/ ...          ← (se irán añadiendo)
+  day-02/              ← teoría y laboratorios del día 2
+  day-03/ ...          ← (se irán añadiendo)
 src/
   day-01/              ← proyecto de ejemplo al FINAL del día 1
-  day-02/ ...          ← cada día es una copia evolucionada del anterior
+  day-02/              ← solución en capas (Clean Architecture) con MVC, Razor Pages y API
+  day-03/ ...          ← cada día es una copia evolucionada del anterior
 ```
 
 ## Requisitos

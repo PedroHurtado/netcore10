@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    WEB (presentación): controladores MVC, vistas Razor, Razor Pages y API.
+    Es la "raíz de composición": el único proyecto que conoce a todos los demás,
+    porque es donde se registran los servicios en el contenedor de DI.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestorIncidencias.Application\GestorIncidencias.Application.csproj" />
+    <ProjectReference Include="..\GestorIncidencias.Infrastructure\GestorIncidencias.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+  </ItemGroup>
+
+</Project>
