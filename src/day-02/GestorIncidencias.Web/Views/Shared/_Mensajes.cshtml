@@ -1,9 +1,19 @@
 @* Vista parcial: muestra los mensajes que deja el controlador en TempData antes de redirigir *@
-@if (TempData["Mensaje"] is string mensaje)
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Mvc
+@inject IOptions<CookieTempDataProviderOptions> OpcionesTempData
+@*
+    Solo se toca TempData si la petición trae su cookie. Leer TempData sin cookie hace que la respuesta
+    lleve un Set-Cookie (borrado de la cookie) y una respuesta con Set-Cookie no se puede guardar en Output Cache.
+*@
+@if (Context.Request.Cookies.ContainsKey(OpcionesTempData.Value.Cookie.Name!))
 {
-    <div class="aviso aviso-ok">@mensaje</div>
-}
-@if (TempData["Error"] is string error)
-{
-    <div class="aviso aviso-error">@error</div>
+    if (TempData["Mensaje"] is string mensaje)
+    {
+        <div class="aviso aviso-ok">@mensaje</div>
+    }
+    if (TempData["Error"] is string error)
+    {
+        <div class="aviso aviso-error">@error</div>
+    }
 }

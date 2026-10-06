@@ -4,6 +4,9 @@
 ## Get latest from `dotnet new gitignore`
 
 asistentes/
+
+# CSS minificado: lo genera la compilación a partir de site.css (tarea MinificarCss del .csproj)
+src/**/wwwroot/css/*.min.css
 # dotenv files
 .env
 

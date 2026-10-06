@@ -13,6 +13,64 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <!-- Minifica el HTML que generan las vistas Razor en cada respuesta. -->
+    <PackageReference Include="WebMarkupMin.AspNetCoreLatest" Version="2.22.5" />
+    <!-- NUglify solo se usa al compilar (tarea MinificarCss, abajo): no se copia a bin ni se referencia desde el código. -->
+    <PackageReference Include="NUglify" Version="1.23.3" GeneratePathProperty="true" PrivateAssets="all" ExcludeAssets="all" />
   </ItemGroup>
+
+  <!--
+    MINIFICACIÓN DEL CSS AL COMPILAR: wwwroot/css/site.css → wwwroot/css/site.min.css
+    Se edita site.css; site.min.css se genera (está en .gitignore) y es el que enlaza el layout.
+
+    Se engancha ANTES de ResolveProjectStaticWebAssets, que es donde MapStaticAssets calcula la huella
+    (site.min.{hash}.css). Si se minificara después, la huella iría una compilación por detrás del contenido y,
+    como la URL con huella se sirve con "immutable", el navegador podría quedarse un año con un CSS desfasado.
+
+    Es una tarea propia (y no el paquete BuildBundlerMinifier) porque aquel escribe mensajes de importancia alta
+    en cada compilación, que VS Code muestra en la ventana Problemas. Esta solo informa si hay errores en el CSS.
+  -->
+  <ItemGroup>
+    <CssMinificable Include="wwwroot\css\site.css" Destino="wwwroot\css\site.min.css" />
+  </ItemGroup>
+
+  <UsingTask TaskName="MinificarCss" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Origen ParameterType="System.String" Required="true" />
+      <Destino ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="$(PkgNUglify)\lib\netstandard2.0\NUglify.dll" />
+      <Using Namespace="NUglify" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var resultado = Uglify.Css(File.ReadAllText(Origen), Origen);
+        foreach (var e in resultado.Errors)
+        {
+            if (e.IsError)
+                Log.LogError("CSS", e.ErrorCode, null, Origen, e.StartLine, e.StartColumn, e.EndLine, e.EndColumn, e.Message);
+            else
+                Log.LogWarning("CSS", e.ErrorCode, null, Origen, e.StartLine, e.StartColumn, e.EndLine, e.EndColumn, e.Message);
+        }
+        if (!resultado.HasErrors)
+            File.WriteAllText(Destino, resultado.Code);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <!-- Inputs/Outputs: solo se vuelve a minificar si site.css es más reciente que site.min.css. -->
+  <Target Name="MinificarCss" BeforeTargets="ResolveProjectStaticWebAssets"
+          Inputs="@(CssMinificable)" Outputs="@(CssMinificable->'%(Destino)')">
+    <MinificarCss Origen="%(CssMinificable.FullPath)" Destino="%(CssMinificable.Destino)" />
+
+    <!-- En una compilación limpia site.min.css no existía al evaluar el proyecto: se añade a Content para
+         que MapStaticAssets lo registre ya en esta compilación. -->
+    <ItemGroup>
+      <Content Include="@(CssMinificable->'%(Destino)')" Exclude="@(Content)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="LimpiarCssMinificado" AfterTargets="CoreClean">
+    <Delete Files="@(CssMinificable->'%(Destino)')" />
+  </Target>
 
 </Project>

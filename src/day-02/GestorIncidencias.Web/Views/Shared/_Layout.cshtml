@@ -6,7 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] · Gestor de Incidencias</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* site.min.css se genera al compilar a partir de site.css (tarea MinificarCss del .csproj) *@
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
 </head>
 <body>
     <header>
