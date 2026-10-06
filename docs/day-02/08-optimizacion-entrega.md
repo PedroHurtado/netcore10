@@ -1,8 +1,10 @@
-# 8. Optimización de la entrega: minificación, caché y compresión
+# 8. Optimización de la entrega: minificación, caché, compresión y CSP
 
 Este capítulo es **material complementario**: no está en la agenda del día, pero recoge las optimizaciones que se han aplicado al proyecto de [src/day-02](../../src/day-02/) después de analizar el rendimiento de `/Paginas/Incidencias`.
 
 El objetivo es enviar **menos bytes**, **menos veces** y gastando **menos CPU** en el servidor, sin romper nada de lo visto en el día (antiforgery, TempData, Post-Redirect-Get).
+
+Al final se añade una **Content Security Policy** (apartado 8.7). No es una optimización, sino un arnés para que nadie escriba JavaScript ni CSS inline, algo que además rompería la separación entre HTML y ficheros estáticos en la que se apoya todo lo anterior.
 
 ## 8.1 Punto de partida
 
@@ -140,8 +142,13 @@ app.Use((context, next) =>
 El HTML lo genera Razor en cada petición, así que no se puede minificar al compilar. Se usa el middleware de `WebMarkupMin.AspNetCoreLatest`:
 
 ```csharp
-// Por defecto WebMarkupMin no actúa en Development; se activa para poder verlo en el curso.
-builder.Services.AddWebMarkupMin(o => o.AllowMinificationInDevelopmentEnvironment = true)
+builder.Services.AddWebMarkupMin(o =>
+    {
+        // Por defecto WebMarkupMin no actúa en Development; se activa para poder verlo en el curso.
+        o.AllowMinificationInDevelopmentEnvironment = true;
+        // No enviar "X-HTML-Minification-Powered-By: WebMarkupMin".
+        o.DisablePoweredByHttpHeaders = true;
+    })
     .AddHtmlMinification();
 
 app.UseWebMarkupMin();   // antes de los endpoints que generan HTML
@@ -152,6 +159,8 @@ Quita espacios, saltos de línea, comentarios y comillas innecesarias en los atr
 ```html
 <!DOCTYPE html><html lang=es><head><meta charset=utf-8>...<link rel=stylesheet href=/css/site.min.x4wtre2m4d.css>
 ```
+
+**Sin cabecera "Powered-By".** Por defecto WebMarkupMin añade `X-HTML-Minification-Powered-By: WebMarkupMin` a cada respuesta. No aporta nada al navegador y le dice a cualquiera qué librería usa el servidor, así que se desactiva con `DisablePoweredByHttpHeaders`. Las respuestas siguen llevando `Server: Kestrel`; si también se quisiera quitar: `builder.WebHost.ConfigureKestrel(o => o.AddServerHeader = false)`.
 
 **El precio: CPU en cada petición.** Medido con WebMarkupMin 2.22.5: unos **70 µs por KB** de HTML (≈ 0,2 ms para esta página, ≈ 5 ms para una de 70 KB). Es lineal con el tamaño, así que en listados grandes se nota. El apartado siguiente lo elimina.
 
@@ -255,10 +264,103 @@ En producción la aplicación estará detrás de un proxy o servidor web (IIS, n
 4. **HTTPS y BREACH**: el middleware no comprime en HTTPS por defecto (`EnableForHttps = false`). Las páginas que mezclan un secreto (el token antiforgery) con texto reflejado de la petición (el filtro `?Estado=`) son el caso que ataca BREACH; hay que evaluarlo antes de activarlo.
 5. **zstd**: no compensa aquí. Su ventaja es la velocidad de compresión, y con Output Cache se comprime una sola vez; Brotli al máximo nivel da un tamaño igual o menor en HTML.
 
-## 8.7 El pipeline completo
+## 8.7 Content Security Policy: arnés contra JavaScript y CSS inline
+
+La cabecera `Content-Security-Policy` le dice al navegador qué puede ejecutar y aplicar la página. Aquí se usa una política **estricta a propósito**, como arnés para el desarrollador: si alguien escribe JavaScript o CSS inline, no funciona. En producción se ajustará la política según lo que haga falta.
+
+### La política
+
+Está en [appsettings.json](../../src/day-02/GestorIncidencias.Web/appsettings.json), no en el código, para poder cambiarla por entorno (`appsettings.Production.json` o la variable de entorno `ContentSecurityPolicy`):
+
+```json
+"ContentSecurityPolicy": "script-src 'self'; script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+```
+
+| Lo que escribe el desarrollador | Qué pasa | Directiva |
+|---|---|---|
+| `<script>...</script>` | No se ejecuta | `script-src 'self'` |
+| `onclick="..."`, `onerror="..."` y demás `on*` | No se ejecuta | `script-src-attr 'none'` |
+| `href="javascript:..."` | No se ejecuta | `script-src 'self'` (sin `'unsafe-inline'`) |
+| `<style>...</style>` | No se aplica | `style-src 'self'` |
+| `style="..."` en cualquier elemento | No se aplica | `style-src-attr 'none'` |
+| `<script src="/js/app.js">`, `<link href="/css/site.min.css">` | Funciona | `'self'` = mismo origen |
+
+Las cuatro últimas directivas son protecciones baratas que no molestan: sin plugins (`object-src 'none'`), sin `<base>` que redirija las URLs relativas (`base-uri`), formularios solo hacia el propio sitio (`form-action`) y la página solo se puede meter en un iframe del mismo sitio (`frame-ancestors`).
+
+**No se pone `default-src` a propósito.** Restringiría también conexiones, imágenes y fuentes. Por ejemplo, cortaría el websocket que usa `dotnet watch` para recargar el navegador, que va a otro puerto. El objetivo aquí es solo lo inline.
+
+### El middleware
+
+[Middleware/ContentSecurityPolicyMiddleware.cs](../../src/day-02/GestorIncidencias.Web/Middleware/ContentSecurityPolicyMiddleware.cs) sigue el mismo patrón que `CorrelationIdMiddleware` del día 1:
+
+```csharp
+public class ContentSecurityPolicyMiddleware(RequestDelegate next, IConfiguration configuration)
+{
+    // Se lee una sola vez: el middleware es singleton.
+    private readonly string? _politica = configuration["ContentSecurityPolicy"];
+
+    public Task InvokeAsync(HttpContext context)
+    {
+        if (string.IsNullOrWhiteSpace(_politica))
+            return next(context);
+
+        // El Content-Type se conoce justo antes de enviar las cabeceras, no al entrar.
+        context.Response.OnStarting(() =>
+        {
+            if (context.Response.ContentType?.StartsWith("text/html", StringComparison.OrdinalIgnoreCase) == true)
+                context.Response.Headers.ContentSecurityPolicy = _politica;
+
+            return Task.CompletedTask;
+        });
+
+        return next(context);
+    }
+}
+```
+
+**Solo en las páginas.** La CSP la aplica el navegador al **documento**: es la página la que decide qué scripts y estilos puede cargar o ejecutar. En los recursos que carga la página (CSS, JS, imágenes) o en el JSON de la API la cabecera no tendría ningún efecto; serían bytes de más en cada respuesta. Por eso solo se añade cuando el `Content-Type` es `text/html`.
+
+Ese `Content-Type` no se conoce al entrar en el middleware (todavía no se ha ejecutado el controlador), así que la comprobación se hace en `OnStarting`, justo antes de enviar las cabeceras.
+
+Se registra al principio del pipeline, justo después de `UseCorrelationId()`. Así `OnStarting` también se ejecuta en los aciertos del Output Cache, que no ejecutan nada de lo que viene detrás.
+
+### Qué ve el desarrollador
+
+Razor **no da ningún error** al compilar: el HTML se genera igual. Es el navegador el que bloquea y lo explica en la consola (F12):
+
+```
+Executing inline script violates the following Content Security Policy directive 'script-src 'self''.
+... The action has been blocked.
+```
+
+La solución es siempre la misma: mover el código a un fichero de `wwwroot/js` o `wwwroot/css`, y en JavaScript usar `addEventListener` en lugar de `onclick`.
+
+### Lo que se comprobó
+
+Con Chrome en modo headless:
+
+| Prueba | Resultado |
+|---|---|
+| Vista con `<style>`, `style=""`, `<script>`, `onerror` y `javascript:`, **sin** CSP | Los tres scripts se ejecutan |
+| La misma vista **con** CSP | No se ejecuta ninguno; la consola muestra las 5 violaciones |
+| Las 6 páginas reales del proyecto | 0 violaciones; el CSS se carga con normalidad |
+
+Y con `curl`, qué respuestas llevan la cabecera:
+
+| Respuesta | `Content-Type` | CSP |
+|---|---|---|
+| Las 6 páginas MVC y Razor Pages | `text/html` | Sí |
+| Página servida desde el Output Cache | `text/html` | Sí |
+| CSS (con y sin huella) | `text/css` | No |
+| API, también su 404 con ProblemDetails | `application/json` | No |
+| `/openapi/v1.json` | `application/json` | No |
+| 404 sin cuerpo | — | No |
+
+## 8.8 El pipeline completo
 
 ```csharp
 app.UseCorrelationId();
+app.UseContentSecurityPolicy();       // 8.7  CSP solo en las respuestas text/html
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -274,13 +376,16 @@ app.MapControllers().WithStaticAssets();
 app.MapRazorPages().WithStaticAssets().CacheOutput(CacheHtmlPolicy.Nombre);
 ```
 
-## 8.8 Cómo comprobarlo
+## 8.9 Cómo comprobarlo
 
 Con la aplicación arrancada (`dotnet run --project GestorIncidencias.Web`):
 
 ```bash
 # HTML minificado
 curl -s http://localhost:5196/Paginas/Incidencias | head -c 300
+
+# Cabeceras de la página: debe salir Content-Security-Policy y NO X-HTML-Minification-Powered-By
+curl -s -D - -o /dev/null http://localhost:5196/Paginas/Incidencias | grep -iE "content-security|powered"
 
 # Qué CSS enlaza la página (debe llevar huella, también en /Incidencias y en /)
 curl -s http://localhost:5196/Incidencias | grep -o '/css/[^" >]*css'
@@ -295,7 +400,10 @@ curl -s -c c.txt -b c.txt -o /dev/null -D - http://localhost:5196/Paginas/Incide
 
 El hash (`x4wtre2m4d`) cambia cada vez que cambia `site.css`: copiadlo de la salida del segundo comando.
 
-En el navegador: herramientas de desarrollo → pestaña **Red** → al recargar, el CSS aparece como *(memory cache)* o *(disk cache)* sin petición al servidor.
+En el navegador (herramientas de desarrollo, F12):
+
+- Pestaña **Red** → al recargar, el CSS aparece como *(memory cache)* o *(disk cache)* sin petición al servidor.
+- Pestaña **Consola** → añadid a cualquier vista `<p style="color:red">prueba</p>`: el texto no sale en rojo y la consola muestra la violación de `style-src-attr`.
 
 ## Referencias
 
@@ -308,6 +416,9 @@ En el navegador: herramientas de desarrollo → pestaña **Red** → al recargar
 - [Prevención de ataques CSRF](https://learn.microsoft.com/es-es/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0) — Tokens antiforgery, por qué no se pueden compartir entre usuarios.
 - [Cache-Control (MDN)](https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Headers/Cache-Control) — `max-age`, `no-cache` e `immutable`.
 - [Content-Encoding (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Encoding) — gzip, br y zstd.
+- [Content Security Policy (MDN)](https://developer.mozilla.org/es/docs/Web/HTTP/Guides/CSP) — Guía de CSP: qué protege y cómo se escribe una política.
+- [Content-Security-Policy (MDN, referencia)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy) — Todas las directivas; ver también [`script-src-attr`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src-attr) y [`style-src-attr`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/style-src-attr).
+- [CSP Evaluator](https://csp-evaluator.withgoogle.com/) — Herramienta de Google para revisar una política antes de llevarla a producción.
 - [WebMarkupMin](https://github.com/Taritsyn/WebMarkupMin) y [WebMarkupMin.AspNetCoreLatest](https://www.nuget.org/packages/WebMarkupMin.AspNetCoreLatest) — Minificador de HTML usado en el proyecto.
 - [NUglify](https://github.com/trullock/NUglify) — Minificador de CSS usado por la tarea de compilación del proyecto.
 - [Tareas insertadas de MSBuild con RoslynCodeTaskFactory](https://learn.microsoft.com/es-es/visualstudio/msbuild/msbuild-roslyncodetaskfactory) — Cómo funciona la tarea `MinificarCss` del `.csproj`.

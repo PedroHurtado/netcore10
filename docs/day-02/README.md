@@ -38,7 +38,7 @@ Al terminar el día el alumno será capaz de:
 | 13:40 – 13:55 | Razor Pages y controladores API sobre los mismos casos de uso | Teoría + demo | [06](06-razor-pages-y-api.md) |
 | 13:55 – 14:00 | Repaso y avance del día 3 | — | [Resumen](07-resumen.md) |
 
-**Material complementario** (fuera de la agenda): [08 — Optimización de la entrega](08-optimizacion-entrega.md): minificación de HTML y CSS, caché del CSS con huella e `immutable`, Output Cache y por qué la compresión del HTML se deja al proxy.
+**Material complementario** (fuera de la agenda): [08 — Optimización de la entrega](08-optimizacion-entrega.md): minificación de HTML y CSS, caché del CSS con huella e `immutable`, Output Cache, por qué la compresión del HTML se deja al proxy y la CSP que impide JavaScript y CSS inline.
 
 ### Guion de las demostraciones
 
@@ -76,7 +76,7 @@ src/day-02/
     ├── Models/                            ← ViewModels (IncidenciaFormulario...)
     ├── Views/                             ← layout, parciales y vistas Razor
     ├── Pages/Paginas/Incidencias/         ← la misma funcionalidad con Razor Pages
-    ├── Middleware/                        ← CorrelationId (del día 1)
+    ├── Middleware/                        ← CorrelationId (del día 1) y Content-Security-Policy (capítulo 8)
     ├── Cache/CacheHtmlPolicy.cs           ← política de Output Cache para el HTML (capítulo 8)
     ├── GestorIncidencias.Web.csproj       ← incluye la tarea que minifica site.css → site.min.css (capítulo 8)
     └── wwwroot/css/site.css               ← se edita este; site.min.css se genera al compilar

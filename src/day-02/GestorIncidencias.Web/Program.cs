@@ -32,7 +32,13 @@ builder.Services.AddRazorPages();
 
 // Minificación del HTML generado por Razor (quita espacios, comentarios, comillas innecesarias...).
 // Por defecto WebMarkupMin no actúa en Development; lo activamos para poder verlo en el curso.
-builder.Services.AddWebMarkupMin(o => o.AllowMinificationInDevelopmentEnvironment = true)
+// DisablePoweredByHttpHeaders: no enviar "X-HTML-Minification-Powered-By: WebMarkupMin"
+// (no aporta nada al cliente y revela qué librería usa el servidor).
+builder.Services.AddWebMarkupMin(o =>
+    {
+        o.AllowMinificationInDevelopmentEnvironment = true;
+        o.DisablePoweredByHttpHeaders = true;
+    })
     .AddHtmlMinification();
 
 // Output Cache: guarda en memoria del servidor el HTML ya minificado (ver Cache/CacheHtmlPolicy.cs).
@@ -53,6 +59,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCorrelationId();
+app.UseContentSecurityPolicy();   // CSP solo en las páginas (text/html): bloquea JS y CSS inline (política en appsettings.json)
 app.UseHttpsRedirection();
 app.UseRouting();
 
