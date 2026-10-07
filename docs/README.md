@@ -23,6 +23,7 @@ La distribución de los días 2 a 5 es orientativa y se ajustará al ritmo del g
 
 - [Día 1 — Introducción y fundamentos](day-01/README.md)
 - [Día 2 — Clean Architecture y MVC con Razor](day-02/README.md)
+- [Día 3 — Datos y persistencia con EF Core, y análisis de aplicaciones legacy](day-03/README.md)
 
 ## Referencias generales
 

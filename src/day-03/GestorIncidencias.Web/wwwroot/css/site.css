@@ -1,0 +1,123 @@
+:root {
+    --primario: #512bd4;
+    --texto: #1f2937;
+    --suave: #6b7280;
+    --borde: #e5e7eb;
+    --fondo-suave: #f9fafb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    margin: 0;
+    color: var(--texto);
+    line-height: 1.5;
+    background: #fff;
+}
+
+header { background: var(--primario); }
+
+nav {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: .75rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+nav a { color: #fff; text-decoration: none; opacity: .9; }
+nav a:hover { opacity: 1; text-decoration: underline; }
+nav .marca { font-weight: 700; margin-right: auto; opacity: 1; }
+
+main { max-width: 960px; margin: 0 auto; padding: 1rem; }
+
+footer {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 1rem;
+    border-top: 1px solid var(--borde);
+    color: var(--suave);
+    font-size: .875rem;
+}
+
+h1 { color: var(--primario); }
+h1 small { color: var(--suave); font-weight: 400; font-size: 1rem; }
+
+code { background: #f3f4f6; padding: 0 .25rem; border-radius: 4px; }
+
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { text-align: left; padding: .5rem; border-bottom: 1px solid var(--borde); }
+th { background: var(--fondo-suave); }
+td form { margin: 0; }
+
+/* Botones */
+.boton, .boton-secundario, .boton-pequeno {
+    display: inline-block;
+    border: 1px solid var(--primario);
+    border-radius: 6px;
+    padding: .4rem .9rem;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+.boton { background: var(--primario); color: #fff; }
+.boton-secundario { background: #fff; color: var(--primario); }
+.boton-pequeno { background: #fff; color: var(--primario); padding: .1rem .5rem; font-size: .875rem; }
+
+.barra { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.filtro { display: flex; gap: .5rem; align-items: center; }
+.acciones { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; }
+
+/* Formularios */
+.formulario { max-width: 560px; }
+.campo { display: flex; flex-direction: column; margin-bottom: 1rem; }
+.campo label { font-weight: 600; margin-bottom: .25rem; }
+input, textarea, select { font: inherit; padding: .4rem; border: 1px solid #d1d5db; border-radius: 6px; }
+.error-campo, .errores { color: #b91c1c; }
+.input-validation-error { border-color: #b91c1c; }
+.errores ul { margin: 0 0 1rem; padding-left: 1.25rem; }
+.validation-summary-valid { display: none; }
+
+/* Mensajes TempData */
+.aviso { padding: .75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.aviso-ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.aviso-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* Estados y prioridades */
+.etiqueta { padding: .1rem .5rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.estado-abierta { background: #dbeafe; color: #1e40af; }
+.estado-encurso { background: #fef3c7; color: #92400e; }
+.estado-resuelta { background: #d1fae5; color: #065f46; }
+.estado-cerrada { background: #e5e7eb; color: #374151; }
+.prioridad-critica { color: #b91c1c; font-weight: 700; }
+.prioridad-alta { color: #c2410c; font-weight: 600; }
+
+/* Ficha de detalle */
+.ficha { display: grid; grid-template-columns: 180px 1fr; gap: .5rem 1rem; }
+.ficha dt { font-weight: 600; color: var(--suave); }
+.ficha dd { margin: 0; }
+
+/* Panel de inicio */
+.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.tarjeta {
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 1rem;
+    color: var(--texto);
+    text-decoration: none;
+    background: var(--fondo-suave);
+}
+.tarjeta .cifra { display: block; font-size: 2rem; font-weight: 700; color: var(--primario); }
+.tarjeta-alerta .cifra { color: #b91c1c; }
+
+.vacio, .nota { color: var(--suave); }
+
+/* Día 3: columnas numéricas, paginación y comentarios */
+.numero { text-align: right; }
+.paginacion { display: flex; gap: 1rem; align-items: center; justify-content: center; margin: 1rem 0; color: var(--suave); }
+.comentarios { list-style: none; padding: 0; margin: 1rem 0; }
+.comentarios li { border-left: 3px solid var(--primario); background: var(--fondo-suave); padding: .5rem .75rem; margin-bottom: .75rem; white-space: pre-line; }
+.comentario-cabecera { color: var(--suave); font-size: .875rem; }

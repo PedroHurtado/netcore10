@@ -1,0 +1,37 @@
+@* Layout = la "página maestra" (equivalente a Site.Master en Web Forms) *@
+@inject IWebHostEnvironment Entorno
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · Gestor de Incidencias</title>
+    @* site.min.css se genera al compilar a partir de site.css (tarea MinificarCss del .csproj) *@
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a class="marca" asp-controller="Home" asp-action="Index">Gestor de Incidencias</a>
+            <a asp-controller="Incidencias" asp-action="Index">Incidencias (MVC)</a>
+            <a asp-controller="Incidencias" asp-action="Crear">Nueva (MVC)</a>
+            <a asp-page="/Paginas/Incidencias/Index">Razor Pages</a>
+            <a href="/api/incidencias">API JSON</a>
+        </nav>
+    </header>
+
+    <main>
+        <partial name="_Mensajes" />
+
+        @* Aquí se inserta el contenido de cada vista (como ContentPlaceHolder en Web Forms) *@
+        @RenderBody()
+    </main>
+
+    <footer>
+        Curso ASP.NET Core · Día 3 · Entorno: <strong>@Entorno.EnvironmentName</strong>
+    </footer>
+
+    @* Las vistas pueden añadir scripts propios con @section Scripts { ... } *@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

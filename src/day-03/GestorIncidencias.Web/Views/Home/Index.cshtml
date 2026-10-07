@@ -1,0 +1,65 @@
+@model PanelViewModel
+@{
+    ViewData["Title"] = "Inicio";
+    var resumen = Model.Resumen;
+}
+
+<h1>@Model.NombreAplicacion</h1>
+
+<div class="panel">
+    <a class="tarjeta" asp-controller="Incidencias" asp-action="Index">
+        <span class="cifra">@resumen.Total</span> incidencias en total
+    </a>
+    <a class="tarjeta" asp-controller="Incidencias" asp-action="Index" asp-route-estado="@EstadoIncidencia.Abierta">
+        <span class="cifra">@resumen.Abiertas</span> abiertas
+    </a>
+    <a class="tarjeta" asp-controller="Incidencias" asp-action="Index" asp-route-estado="@EstadoIncidencia.EnCurso">
+        <span class="cifra">@resumen.EnCurso</span> en curso
+    </a>
+    <div class="tarjeta @(resumen.CriticasPendientes > 0 ? "tarjeta-alerta" : "")">
+        <span class="cifra">@resumen.CriticasPendientes</span> críticas pendientes
+    </div>
+</div>
+
+@* Cifras calculadas con GROUP BY en la base de datos (EfIncidenciaConsultas.ObtenerResumenAsync) *@
+<h2>Por categoría</h2>
+<table>
+    <thead>
+        <tr><th>Categoría</th><th class="numero">Pendientes</th><th class="numero">Total</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var fila in resumen.PorCategoria)
+        {
+            <tr>
+                <td>@fila.Categoria</td>
+                <td class="numero">@fila.Pendientes</td>
+                <td class="numero">@fila.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>La misma aplicación, tres interfaces</h2>
+<table>
+    <thead>
+        <tr><th>Interfaz</th><th>Dónde está el código</th><th>Probar</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>MVC (controlador + vistas)</td>
+            <td><code>Controllers/IncidenciasController.cs</code> + <code>Views/Incidencias/</code></td>
+            <td><a asp-controller="Incidencias" asp-action="Index">/Incidencias</a></td>
+        </tr>
+        <tr>
+            <td>Razor Pages</td>
+            <td><code>Pages/Paginas/Incidencias/</code></td>
+            <td><a asp-page="/Paginas/Incidencias/Index">/Paginas/Incidencias</a></td>
+        </tr>
+        <tr>
+            <td>API REST (controlador API)</td>
+            <td><code>Controllers/Api/IncidenciasApiController.cs</code></td>
+            <td><a href="/api/incidencias">/api/incidencias</a></td>
+        </tr>
+    </tbody>
+</table>
+<p>Las tres usan el mismo <code>IIncidenciaService</code> (proyecto <code>GestorIncidencias.Application</code>).</p>

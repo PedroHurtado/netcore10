@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    INFRAESTRUCTURA: detalles técnicos (EF Core, ficheros, correo, APIs externas...).
+    Implementa las interfaces que define la capa de Aplicación.
+
+    Seguimos con el proveedor InMemory: no hay que instalar nada. En una aplicación real se usaría
+    Microsoft.EntityFrameworkCore.SqlServer y el esquema se gestionaría con migraciones
+    (ver docs/day-03/03-migraciones.md). El resto del código no cambiaría.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestorIncidencias.Application\GestorIncidencias.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.12" />
+  </ItemGroup>
+
+</Project>
