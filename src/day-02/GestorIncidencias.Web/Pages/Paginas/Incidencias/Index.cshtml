@@ -6,6 +6,14 @@
 
 <h1>Incidencias <small>· Razor Pages</small></h1>
 
+
+<host-element>
+  <template shadowrootmode="open">
+    <slot></slot>
+  </template>
+  <h2>Light content</h2>
+</host-element>
+
 <div class="barra">
     <form method="get" class="filtro">
         <label asp-for="Estado">Estado:</label>
