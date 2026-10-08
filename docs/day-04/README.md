@@ -41,6 +41,8 @@ Al terminar el día el alumno será capaz de:
 | 13:30 – 13:52 | **Lab 3** — Pruebas unitarias y de integración | Práctica guiada | [Lab 3](labs/lab-03-pruebas.md) |
 | 13:52 – 14:00 | Repaso y avance del día 5 | — | [Resumen](09-resumen.md) |
 
+**Material complementario** (fuera de la agenda): [10 — Tecnologías web anteriores a .NET Core y a qué migrarlas](10-panorama-tecnologias-web.md): comparativa de Web Forms, MVC 5, WCF, ASMX, plugins (Silverlight, Flash, ActiveX, applets), JavaScript antiguo (jQuery, AngularJS...) y backends no .NET, con su destino moderno (Razor Pages/MVC, Blazor o SPA + API) y cómo elegir. Útil para el caso práctico del día 5.
+
 ### Guion de las demostraciones
 
 | Bloque | Qué enseñar en directo |
