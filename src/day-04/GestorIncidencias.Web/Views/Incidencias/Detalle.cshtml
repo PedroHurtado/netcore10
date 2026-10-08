@@ -1,0 +1,109 @@
+@model IncidenciaDetalleDto
+@{
+    var incidencia = Model.Incidencia;
+    ViewData["Title"] = $"Incidencia {incidencia.Id}";
+}
+
+<p><a asp-action="Index">← Volver al listado</a></p>
+
+<h1>#@incidencia.Id · @incidencia.Titulo</h1>
+
+<dl class="ficha">
+    <dt>Estado</dt>
+    <dd><partial name="_Estado" model="incidencia.Estado" /></dd>
+
+    <dt>Prioridad</dt>
+    <dd class="prioridad-@incidencia.Prioridad.ToString().ToLowerInvariant()">@incidencia.Prioridad</dd>
+
+    <dt>Categoría</dt>
+    <dd>
+        @* Laboratorio 1 del día 3: cambiar la categoría (el desplegable lo prepara el controlador en ViewBag.Categorias) *@
+        @if (incidencia.Estado == EstadoIncidencia.Cerrada)
+        {
+            @(incidencia.Categoria ?? "—")
+        }
+        else
+        {
+            <form asp-action="CambiarCategoria" asp-route-id="@incidencia.Id" method="post" class="filtro">
+                <select name="categoriaId" asp-items="ViewBag.Categorias">
+                    <option value="">(sin categoría)</option>
+                </select>
+                <button type="submit" class="boton-pequeno">Cambiar</button>
+            </form>
+        }
+    </dd>
+
+    <dt>Descripción</dt>
+    <dd>@(incidencia.Descripcion ?? "—")</dd>
+
+    <dt>Fecha de alta</dt>
+    <dd>@incidencia.FechaAlta.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt>Fecha de resolución</dt>
+    <dd>@(incidencia.FechaResolucion?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+</dl>
+
+@*
+    Cada acción es un pequeño formulario POST (cambia datos → nunca con GET).
+    El Tag Helper <form> añade automáticamente el campo oculto __RequestVerificationToken (antiforgery).
+    La vista solo decide QUÉ botones enseñar; si alguien fuerza el POST, el dominio lo rechaza igualmente.
+*@
+<div class="acciones">
+    @if (incidencia.Estado == EstadoIncidencia.Abierta)
+    {
+        <form asp-action="Iniciar" asp-route-id="@incidencia.Id" method="post">
+            <button type="submit" class="boton-secundario">Iniciar</button>
+        </form>
+    }
+    @if (incidencia.Estado is EstadoIncidencia.Abierta or EstadoIncidencia.EnCurso)
+    {
+        <form asp-action="Resolver" asp-route-id="@incidencia.Id" method="post">
+            <button type="submit" class="boton">Resolver</button>
+        </form>
+    }
+    @if (incidencia.Estado == EstadoIncidencia.Resuelta)
+    {
+        <form asp-action="Cerrar" asp-route-id="@incidencia.Id" method="post">
+            <button type="submit" class="boton-secundario">Cerrar</button>
+        </form>
+        <form asp-action="Reabrir" asp-route-id="@incidencia.Id" method="post">
+            <button type="submit" class="boton-secundario">Reabrir</button>
+        </form>
+    }
+</div>
+
+@* Comentarios: la relación 1:N Incidencia → Comentarios *@
+<h2>Comentarios (@Model.Comentarios.Count)</h2>
+
+@if (Model.Comentarios.Count == 0)
+{
+    <p class="vacio">Todavía no hay comentarios.</p>
+}
+else
+{
+    <ol class="comentarios">
+        @foreach (var comentario in Model.Comentarios)
+        {
+            <li>
+                <div class="comentario-cabecera">
+                    <strong>@comentario.Autor</strong> · @comentario.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                </div>
+                <div>@comentario.Texto</div>
+            </li>
+        }
+    </ol>
+}
+
+@if (incidencia.Estado != EstadoIncidencia.Cerrada)
+{
+    @* El nombre del campo (Texto) coincide con ComentarioFormulario → model binding en la acción Comentar.
+       Día 4: no hay campo Autor; el autor es el usuario que ha iniciado sesión. *@
+    <form asp-action="Comentar" asp-route-id="@incidencia.Id" method="post" class="formulario">
+        <p class="nota">Comentarás como <strong>@(User.FindFirst(TiposClaim.NombreCompleto)?.Value ?? User.Identity?.Name)</strong>.</p>
+        <div class="campo">
+            <label for="Texto">Comentario</label>
+            <textarea id="Texto" name="Texto" rows="3" maxlength="@Comentario.TextoLongitudMaxima" required></textarea>
+        </div>
+        <button type="submit" class="boton-secundario">Añadir comentario</button>
+    </form>
+}

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    PRUEBAS UNITARIAS: Dominio y Aplicación, sin base de datos, sin servidor web y sin red.
+    Se ejecutan en milisegundos: se pueden lanzar cada vez que se guarda un fichero.
+
+      xunit.v3                              → el framework de pruebas ([Fact], [Theory], Assert)
+      NSubstitute                           → "dobles" de las interfaces (repositorio, consultas, usuario actual)
+      Microsoft.Extensions.TimeProvider.Testing → FakeTimeProvider: un reloj que controla la prueba
+  -->
+
+  <!--
+    xUnit v3 genera un EJECUTABLE (OutputType Exe) que usa Microsoft.Testing.Platform: por eso el global.json
+    de la carpeta de la solución activa ese modo en "dotnet test". Microsoft.NET.Test.Sdk y xunit.runner.visualstudio
+    permiten además que el Explorador de pruebas de Visual Studio y de VS Code las encuentre.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\GestorIncidencias.Application\GestorIncidencias.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageReference Include="xunit.v3" Version="4.0.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" />
+    <PackageReference Include="NSubstitute" Version="6.2.0" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

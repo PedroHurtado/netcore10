@@ -1,0 +1,106 @@
+### Peticiones de prueba de la API (Visual Studio / VS Code con REST Client)
+### La interfaz web (MVC y Razor Pages) se prueba desde el navegador: http://localhost:5196
+###
+### Día 4: la API exige un TOKEN. Primero se ejecuta "Pedir token" y las demás peticiones lo reutilizan
+### con {{token}} (variables de petición con nombre: # @name).
+@host = http://localhost:5196
+@clave = Curso2026!
+
+### Sin token → 401 Unauthorized (la API nunca redirige al login)
+GET {{host}}/api/incidencias
+
+### Pedir token como Ana (rol Tecnico)
+# @name login
+POST {{host}}/api/cuenta/token
+Content-Type: application/json
+
+{
+  "correo": "ana@demo.local",
+  "clave": "{{clave}}"
+}
+
+@token = {{login.response.body.$.accessToken}}
+
+### Contraseña incorrecta → 401 (5 fallos seguidos bloquean la cuenta 5 minutos)
+POST {{host}}/api/cuenta/token
+Content-Type: application/json
+
+{
+  "correo": "ana@demo.local",
+  "clave": "incorrecta"
+}
+
+### Listar incidencias (paginado)
+GET {{host}}/api/incidencias?estado=Abierta
+Authorization: Bearer {{token}}
+
+### Obtener una incidencia con sus comentarios
+GET {{host}}/api/incidencias/1
+Authorization: Bearer {{token}}
+
+### Incidencia inexistente → 404
+GET {{host}}/api/incidencias/999
+Authorization: Bearer {{token}}
+
+### Crear incidencia → 201 Created + cabecera Location
+POST {{host}}/api/incidencias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "El escáner de recepción no envía correos",
+  "descripcion": "Desde el lunes",
+  "prioridad": "Alta",
+  "categoriaId": 1
+}
+
+### Crear incidencia NO válida → 400 automático gracias a [ApiController]
+POST {{host}}/api/incidencias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "abc"
+}
+
+### Comentar: el autor es el usuario del token (Ana García), no viaja en el cuerpo
+POST {{host}}/api/incidencias/1/comentarios
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "texto": "Comentario añadido desde la API."
+}
+
+### Cambiar la categoría (cuerpo: un Id, o null para quitarla)
+PUT {{host}}/api/incidencias/1/categoria
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+5
+
+### Iniciar (Abierta → EnCurso)
+POST {{host}}/api/incidencias/1/iniciar
+Authorization: Bearer {{token}}
+
+### Resolver
+POST {{host}}/api/incidencias/1/resolver
+Authorization: Bearer {{token}}
+
+### Cerrar (Resuelta → Cerrada)
+POST {{host}}/api/incidencias/1/cerrar
+Authorization: Bearer {{token}}
+
+### Cerrar otra vez → 409 Conflict (regla del dominio)
+POST {{host}}/api/incidencias/1/cerrar
+Authorization: Bearer {{token}}
+
+### Informe por prioridad
+GET {{host}}/api/incidencias/resumen/prioridades
+Authorization: Bearer {{token}}
+
+### Comprobación de salud (pública)
+GET {{host}}/salud
+
+### Documento OpenAPI (solo Development)
+GET {{host}}/openapi/v1.json

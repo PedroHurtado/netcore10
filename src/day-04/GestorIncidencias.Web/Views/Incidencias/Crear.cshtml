@@ -1,0 +1,49 @@
+@model IncidenciaFormulario
+@{
+    ViewData["Title"] = "Nueva incidencia";
+}
+
+<h1>Nueva incidencia</h1>
+
+@*
+    Tag Helpers de formulario:
+      asp-action  → genera action="/Incidencias/Crear"
+      asp-for     → genera id, name, value, <label> y atributos de validación a partir del ViewModel
+*@
+<form asp-action="Crear" method="post" class="formulario">
+
+    @* Errores generales (los añadidos con ModelState.AddModelError(string.Empty, ...)) *@
+    <div asp-validation-summary="ModelOnly" class="errores"></div>
+
+    <div class="campo">
+        <label asp-for="Titulo"></label>
+        <input asp-for="Titulo" autofocus />
+        <span asp-validation-for="Titulo" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Descripcion"></label>
+        <textarea asp-for="Descripcion" rows="4"></textarea>
+        <span asp-validation-for="Descripcion" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Prioridad"></label>
+        <select asp-for="Prioridad" asp-items="Html.GetEnumSelectList<Prioridad>()">
+            <option value="">(la de la configuración)</option>
+        </select>
+    </div>
+
+    <div class="campo">
+        <label asp-for="CategoriaId"></label>
+        @* Las opciones las prepara el controlador (CargarCategoriasAsync) en ViewBag.Categorias, a partir de la tabla Categorias *@
+        <select asp-for="CategoriaId" asp-items="ViewBag.Categorias">
+            <option value="">(sin categoría)</option>
+        </select>
+    </div>
+
+    <div class="acciones">
+        <button type="submit" class="boton">Crear</button>
+        <a asp-action="Index">Cancelar</a>
+    </div>
+</form>
