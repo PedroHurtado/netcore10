@@ -1,0 +1,66 @@
+@model Noticom.Web.Models.LoteModel
+
+<div class="row espacioarriba">
+    <div class="col-lg-12">
+        @{
+            if (Model.TipoEjecucion == "c")
+            {
+                <h1 class="titulo"><span>Consulta de lotes</span></h1>
+            }
+            else if (Model.TipoEjecucion == "v")
+            {
+                <h1 class="titulo"><span>Lotes pendientes de validación</span></h1>
+            }
+            else if (Model.TipoEjecucion == "cr")
+            {
+                <h1 class="titulo"><span>Crear remesas</span></h1>
+            }
+            else if (Model.TipoEjecucion == "b")
+            {
+                <h1 class="titulo"><span>Borrar lotes</span></h1>
+            }
+        }
+    </div>
+</div>
+
+@Html.Partial("_BusquedaLotes", Model)
+
+@Html.Partial("_BusquedaAvanzadaLotes", Model)
+
+<div class="row justify-content-center espacioarriba">
+    <div class="col-lg-8">
+        <div id="GridviewLotes"></div>
+
+        <div class="row text-center" id="InformacionGridviewVacio" style="display:none;">
+            <div class="col-lg-2">
+                <div class="negrita">- Sin datos</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@{
+    //Crear remesa
+    if (Model.TipoEjecucion == "cr")
+    {
+        <div class="row espacioarriba">
+            <div class="col-lg-12 text-center">
+                @Html.Label("Nombreremesa", "Nombre remesa", new { id = "lblNombreremesa" })  @Html.TextBoxFor(m => m.Nombreremesa, new { @class = "form-control", @style = "width:250px;" })
+                <button class="btn btn-primary" id="BtnCrearRemesas" data-toggle="modal" data-target="#myModalConfirmacion">Crear remesa</button>
+            </div>
+        </div>
+    }
+}
+
+
+<script type="application/json" id="lotes-config">
+    @Json.Serialize(new
+    {
+        Model.TipoEjecucion,
+        Model.Proceso,
+        Model.Ejercicio
+    })
+</script>
+
+<script src="~/js/lote/prueba1.js" asp-append-version="true"></script>
