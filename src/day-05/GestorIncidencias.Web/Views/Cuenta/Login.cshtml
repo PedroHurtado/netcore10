@@ -1,0 +1,48 @@
+@model LoginFormulario
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<h1>Iniciar sesión</h1>
+
+@* El ReturnUrl viaja en un campo oculto: tras identificarse, el usuario vuelve a la página que pidió *@
+<form asp-action="Login" method="post" class="formulario">
+    <div asp-validation-summary="ModelOnly" class="errores"></div>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div class="campo">
+        <label asp-for="Correo"></label>
+        <input asp-for="Correo" autocomplete="username" autofocus />
+        <span asp-validation-for="Correo" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Clave"></label>
+        <input asp-for="Clave" autocomplete="current-password" />
+        <span asp-validation-for="Clave" class="error-campo"></span>
+    </div>
+
+    <div class="campo campo-casilla">
+        <input asp-for="Recordarme" />
+        <label asp-for="Recordarme"></label>
+    </div>
+
+    <div class="acciones">
+        <button type="submit" class="boton">Entrar</button>
+    </div>
+</form>
+
+<environment include="Development">
+    <h2>Usuarios de demostración</h2>
+    <p class="nota">Solo en Development. La contraseña de los tres está en <code>appsettings.Development.json</code> (<code>Incidencias:ClaveUsuariosDemo</code>).</p>
+    <table>
+        <thead>
+            <tr><th>Correo</th><th>Nombre</th><th>Rol</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>ana@demo.local</code></td><td>Ana García</td><td>Tecnico</td></tr>
+            <tr><td><code>luis@demo.local</code></td><td>Luis Pérez</td><td>(ninguno)</td></tr>
+            <tr><td><code>admin@demo.local</code></td><td>Marta Ruiz</td><td>Administrador</td></tr>
+        </tbody>
+    </table>
+</environment>

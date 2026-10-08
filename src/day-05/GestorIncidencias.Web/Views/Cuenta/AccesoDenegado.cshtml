@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<h1>Acceso denegado</h1>
+
+@* 403: el usuario SÍ se ha identificado (si no, iría al login), pero no tiene permiso para lo que ha pedido *@
+<p>Has iniciado sesión como <strong>@User.Identity?.Name</strong>, pero no tienes permiso para acceder a esa página o hacer esa operación.</p>
+<p>Si crees que deberías tenerlo, pide al administrador que revise tus roles.</p>
+
+<p><a asp-controller="Home" asp-action="Index">← Volver al inicio</a></p>

@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="GestorIncidencias.Domain/GestorIncidencias.Domain.csproj" />
+    <Project Path="GestorIncidencias.Application/GestorIncidencias.Application.csproj" />
+    <Project Path="GestorIncidencias.Infrastructure/GestorIncidencias.Infrastructure.csproj" />
+    <Project Path="GestorIncidencias.Web/GestorIncidencias.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GestorIncidencias.UnitTests/GestorIncidencias.UnitTests.csproj" />
+    <Project Path="tests/GestorIncidencias.IntegrationTests/GestorIncidencias.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

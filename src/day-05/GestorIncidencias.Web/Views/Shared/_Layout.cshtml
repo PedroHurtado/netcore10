@@ -1,0 +1,59 @@
+@* Layout = la "página maestra" (equivalente a Site.Master en Web Forms) *@
+@inject IWebHostEnvironment Entorno
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · Gestor de Incidencias</title>
+    @* site.min.css se genera al compilar a partir de site.css (tarea MinificarCss del .csproj) *@
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a class="marca" asp-area="" asp-controller="Home" asp-action="Index">Gestor de Incidencias</a>
+            <a asp-area="" asp-controller="Incidencias" asp-action="Index">Incidencias (MVC)</a>
+            <a asp-area="" asp-controller="Incidencias" asp-action="Crear">Nueva (MVC)</a>
+            <a asp-area="" asp-page="/Paginas/Incidencias/Index">Razor Pages</a>
+            @* Día 5: las dos aplicaciones migradas (áreas).
+               OJO: este layout también lo usan las vistas de las áreas. Un enlace sin asp-area HEREDA el área de la página
+               actual: desde /Sirei, asp-controller="Incidencias" buscaría /Sirei/Incidencias, que no existe, y el
+               Tag Helper dejaría el href VACÍO. Por eso todos los enlaces "de fuera" llevan asp-area="". *@
+            <a asp-area="Sirei" asp-controller="Expedientes" asp-action="Index">SIREI</a>
+            <a asp-area="Noticom" asp-controller="Lotes" asp-action="Index">Noticom</a>
+            @* Lo que se muestra depende del usuario (User = HttpContext.User, lo rellena UseAuthentication) *@
+            @if (User.IsInRole(Roles.Administrador))
+            {
+                <a asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+            }
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <span class="usuario">@(User.FindFirst(TiposClaim.NombreCompleto)?.Value ?? User.Identity.Name)</span>
+                @* Cerrar sesión es un POST con token antiforgery, nunca un enlace GET *@
+                <form asp-area="" asp-controller="Cuenta" asp-action="Logout" method="post" class="form-salir">
+                    <button type="submit" class="boton-enlace">Salir</button>
+                </form>
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Cuenta" asp-action="Login">Iniciar sesión</a>
+            }
+        </nav>
+    </header>
+
+    <main>
+        <partial name="_Mensajes" />
+
+        @* Aquí se inserta el contenido de cada vista (como ContentPlaceHolder en Web Forms) *@
+        @RenderBody()
+    </main>
+
+    <footer>
+        Curso ASP.NET Core · Día 5 · Entorno: <strong>@Entorno.EnvironmentName</strong>
+    </footer>
+
+    @* Las vistas pueden añadir scripts propios con @section Scripts { ... } *@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

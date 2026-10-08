@@ -1,0 +1,67 @@
+@page
+@model IndexModel
+@inject IAuthorizationService Autorizacion
+@{
+    var puedeGestionar = (await Autorizacion.AuthorizeAsync(User, Politicas.GestionarIncidencias)).Succeeded;
+    ViewData["Title"] = "Incidencias (Razor Pages)";
+    var pagina = Model.Resultado;
+}
+
+<h1>Incidencias <small>· Razor Pages</small></h1>
+
+<div class="barra">
+    <form method="get" class="filtro">
+        <label asp-for="Estado">Estado:</label>
+        <select asp-for="Estado" asp-items="Html.GetEnumSelectList<EstadoIncidencia>()">
+            <option value="">(todos)</option>
+        </select>
+        <button type="submit" class="boton-secundario">Filtrar</button>
+    </form>
+
+    <a class="boton" asp-page="Crear">+ Nueva incidencia</a>
+</div>
+
+<table>
+    <thead>
+        <tr><th>#</th><th>Título</th><th>Categoría</th><th>Prioridad</th><th>Estado</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var incidencia in pagina.Elementos)
+        {
+            <tr>
+                <td>@incidencia.Id</td>
+                <td>@incidencia.Titulo</td>
+                <td>@(incidencia.Categoria ?? "—")</td>
+                <td class="prioridad-@incidencia.Prioridad.ToString().ToLowerInvariant()">@incidencia.Prioridad</td>
+                <td><partial name="_Estado" model="incidencia.Estado" /></td>
+                <td>
+                    @if (puedeGestionar && incidencia.Estado is (EstadoIncidencia.Abierta or EstadoIncidencia.EnCurso))
+                    {
+                        @* asp-page-handler="Resolver" → llama a OnPostResolverAsync *@
+                        <form method="post" asp-page-handler="Resolver" asp-route-id="@incidencia.Id"
+                              asp-route-estado="@Model.Estado" asp-route-numeropagina="@pagina.NumeroPagina">
+                            <button type="submit" class="boton-pequeno">Resolver</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav class="paginacion" aria-label="Paginación">
+    @if (pagina.HayAnterior)
+    {
+        <a asp-page="Index" asp-route-estado="@Model.Estado" asp-route-numeropagina="@(pagina.NumeroPagina - 1)">← Anterior</a>
+    }
+    <span>Página @pagina.NumeroPagina de @pagina.TotalPaginas · @pagina.TotalElementos incidencias</span>
+    @if (pagina.HaySiguiente)
+    {
+        <a asp-page="Index" asp-route-estado="@Model.Estado" asp-route-numeropagina="@(pagina.NumeroPagina + 1)">Siguiente →</a>
+    }
+</nav>
+
+<p class="nota">
+    Esta página hace lo mismo que <a asp-controller="Incidencias" asp-action="Index">/Incidencias</a> (MVC),
+    con el mismo <code>IIncidenciaService</code>. Solo cambia la forma de organizar la capa de presentación.
+</p>

@@ -1,0 +1,39 @@
+@model IReadOnlyList<RemesaDto>
+@{
+    ViewData["Title"] = "Remesas · Noticom";
+}
+
+<h1>Remesas <small>· Noticom migrado</small></h1>
+
+<nav class="pestanas" aria-label="Pantallas de lotes">
+    @foreach (var modo in Enum.GetValues<ModoLotes>())
+    {
+        <a asp-action="Index" asp-route-modo="@modo">@modo</a>
+    }
+    <a asp-action="Remesas" class="activa">Remesas</a>
+</nav>
+
+@if (Model.Count == 0)
+{
+    <p class="vacio">Todavía no hay remesas.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>#</th><th>Nombre</th><th>Creada</th><th class="numero">Lotes</th><th class="numero">Notificaciones</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var remesa in Model)
+            {
+                <tr>
+                    <td>@remesa.Id</td>
+                    <td><a asp-action="Index" asp-route-modo="@ModoLotes.Consulta" asp-route-remesa="@remesa.Nombre">@remesa.Nombre</a></td>
+                    <td>@remesa.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="numero">@remesa.NumeroLotes</td>
+                    <td class="numero">@remesa.NumeroNotificaciones</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

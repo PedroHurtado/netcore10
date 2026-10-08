@@ -12,13 +12,14 @@ docs/
   day-02/              ← teoría y laboratorios del día 2
   day-03/              ← teoría y laboratorios del día 3
   day-04/              ← teoría y laboratorios del día 4
-  day-05/ ...          ← (se irá añadiendo)
+  day-05/              ← caso práctico (SIREI y Noticom), resolución de problemas y cierre del curso
+    legacy/            ← código legacy de partida (Web Forms y MVC 5) para los laboratorios
 src/
   day-01/              ← proyecto de ejemplo al FINAL del día 1
   day-02/              ← solución en capas (Clean Architecture) con MVC, Razor Pages y API
   day-03/              ← EF Core: relaciones, lecturas con proyección y paginación
   day-04/              ← Identity, autorización, sesión, logging estructurado y proyectos de pruebas
-  day-05/ ...          ← cada día es una copia evolucionada del anterior
+  day-05/              ← solución final: SIREI y Noticom migrados como áreas (Areas/Sirei, Areas/Noticom)
 ```
 
 ## Requisitos
@@ -41,6 +42,6 @@ Abre http://localhost:5196
 Desde el día 4 la solución incluye pruebas automáticas:
 
 ```bash
-cd src/day-04
+cd src/day-05
 dotnet test
 ```

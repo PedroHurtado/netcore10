@@ -17,7 +17,7 @@ La distribución de los días 2 a 5 es orientativa y se ajustará al ritmo del g
 | **2** | M2 (2ª parte) | Clean Architecture · Hexagonal vs Clean vs Vertical Slice · Controladores MVC y vistas Razor · Razor Pages y controladores API. *Día con más teoría y demostración; laboratorios muy guiados* | Solución en capas (Domain / Application / Infrastructure / Web) con interfaz MVC, Razor Pages y API sobre los mismos casos de uso |
 | **3** | M4 + M3 (1ª parte) | EF Core: configuración, relaciones y migraciones · Patrones de acceso a datos · De DataSet/DataTable a EF Core · Rendimiento de consultas · Análisis de aplicaciones legacy y estrategias de migración | Persistencia completa con EF Core; inicio del análisis de SIREI |
 | **4** | M3 (2ª parte) + M5 + M6 | Web Forms → Razor/MVC: controles, eventos, estado (Session/ViewState) · Herramientas de Microsoft · Migración desde MVC 5 · Autenticación y autorización, Identity, OAuth2/OIDC · CSRF y XSS · Logging, rendimiento y pruebas | Aplicación securizada con Identity, logging estructurado y pruebas |
-| **5** | M7 (caso práctico) | Migración guiada de SIREI (Web Forms) y Noticom (MVC) · Ejercicios de controladores, vistas y servicios · Resolución de problemas comunes | Aplicaciones migradas |
+| **5** | M7 (caso práctico) | Método de migración por pantalla · Migración guiada de SIREI (Web Forms) y Noticom (MVC 5) · Ejercicios de controladores, vistas y servicios · Resolución de problemas comunes · Cierre del curso | Aplicaciones migradas como áreas de la solución (`/Sirei`, `/Noticom`), con pruebas |
 
 ## Índice de material
 
@@ -25,6 +25,8 @@ La distribución de los días 2 a 5 es orientativa y se ajustará al ritmo del g
 - [Día 2 — Clean Architecture y MVC con Razor](day-02/README.md)
 - [Día 3 — Datos y persistencia con EF Core, y análisis de aplicaciones legacy](day-03/README.md)
 - [Día 4 — Migración desde Web Forms y MVC 5, seguridad, logging y pruebas](day-04/README.md)
+- [Día 5 — Caso práctico: migración de SIREI y Noticom, y cierre del curso](day-05/README.md)
+  - [Cierre del curso: repaso, lista de comprobación, hoja de ruta y autoevaluación](day-05/05-cierre-curso.md)
 
 ## Referencias generales
 

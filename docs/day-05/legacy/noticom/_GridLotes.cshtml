@@ -1,0 +1,45 @@
+@* Views/Lote/_GridLotes.cshtml de Noticom (MVC 5): la tabla que devuelve ConsultaLotes y que pinta $('#GridviewLotes').html(...) *@
+@model List<Noticom.Web.Data.Lote>
+
+@* 🚩 15 columnas para las 4 pantallas; el JavaScript de Index.cshtml oculta unas u otras por número *@
+<table id="gridLotes" class="table table-striped">
+    <tr>
+        <th></th>                @* 1  casilla de selección *@
+        <th>Id</th>              @* 2  ← crearRemesa() lee el Id de AQUÍ (td:nth-child(2)) *@
+        <th>Proceso</th>         @* 3 *@
+        <th>Ejercicio</th>       @* 4 *@
+        <th>Descripción</th>     @* 5 *@
+        <th>Tipo</th>            @* 6 *@
+        <th>Pago</th>            @* 7 *@
+        <th>Notificaciones</th>  @* 8 *@
+        <th>Estado</th>          @* 9 *@
+        <th>Alta</th>            @* 10 *@
+        <th>Validado</th>        @* 11 *@
+        <th>Remesa</th>          @* 12 *@
+        <th>Documentos</th>      @* 13 *@
+        <th>Validar</th>         @* 14 *@
+        <th>Borrar</th>          @* 15 *@
+    </tr>
+    @foreach (var lote in Model)
+    {
+        <tr>
+            <td><input type="checkbox" id="chkBoxSel_@lote.Id" /></td>
+            <td>@lote.Id</td>
+            <td>@lote.Proceso</td>
+            <td>@lote.Ejercicio</td>
+            <td>@lote.Descripcion</td>
+            <td>@lote.Tipo</td>
+            <td>@(lote.ConPago ? "Sí" : "No")</td>
+            <td>@lote.NumeroNotificaciones</td>
+            @* 🚩 Número mágico de estado traducido en la vista *@
+            <td>@(lote.IdEstado == 1 ? "Pendiente" : lote.IdEstado == 2 ? "Validado" : "Remesado")</td>
+            <td>@lote.FechaAlta.ToString("dd/MM/yyyy")</td>
+            <td>@(lote.FechaValidacion.HasValue ? lote.FechaValidacion.Value.ToString("dd/MM/yyyy") : "")</td>
+            <td>@(lote.Remesa != null ? lote.Remesa.Nombre : "")</td>
+            @* 🚩 onclick inline: la CSP (script-src-attr 'none') lo bloquea *@
+            <td><a href="#" onclick="verDocumentos(@lote.Id)">Ver</a></td>
+            <td><a href="#" onclick="validarLote(@lote.Id)">Validar</a></td>
+            <td><a href="#" onclick="borrarLote(@lote.Id)">Borrar</a></td>
+        </tr>
+    }
+</table>

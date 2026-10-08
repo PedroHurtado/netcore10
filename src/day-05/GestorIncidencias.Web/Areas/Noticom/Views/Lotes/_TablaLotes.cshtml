@@ -1,0 +1,112 @@
+@*
+    Vista PARCIAL: la usa Index.cshtml al pintar la página completa y la acción Tabla cuando lotes.js
+    la pide con fetch (búsqueda y paginación sin recargar la página).
+
+    Antes: una tabla con TODAS las columnas y, al terminar cada AJAX, ocultarColumnaGridview(12, 'gridLotes')...
+    por NÚMERO de columna. Añadir una columna descolocaba las cuatro pantallas. Ahora cada columna se pinta o no
+    según el ViewModel, en el servidor.
+*@
+@model LotesViewModel
+@{
+    var pagina = Model.Pagina;
+}
+
+@if (pagina.TotalElementos == 0)
+{
+    @* Antes: <div id="InformacionGridviewVacio" style="display:none"> que el JavaScript mostraba si la tabla tenía 1 fila *@
+    <p class="vacio">- Sin datos</p>
+}
+else
+{
+    <table id="tabla-lotes">
+        <thead>
+            <tr>
+                @if (Model.ColumnaSeleccion)
+                {
+                    <th><input type="checkbox" data-seleccionar-todos aria-label="Seleccionar todos" /></th>
+                }
+                <th>Lote</th>
+                <th>Proceso</th>
+                <th>Ejercicio</th>
+                <th>Descripción</th>
+                <th>Tipo</th>
+                <th class="numero">Notif.</th>
+                @if (Model.ColumnaEstado) { <th>Estado</th> }
+                @if (Model.ColumnaRemesa) { <th>Remesa</th> }
+                @if (Model.ColumnaValidacion) { <th>Validado</th> } else { <th>Alta</th> }
+                @if (Model.ColumnaValidar || Model.ColumnaBorrar) { <th></th> }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lote in pagina.Elementos)
+            {
+                <tr>
+                    @if (Model.ColumnaSeleccion)
+                    {
+                        @* form="form-remesa": la casilla pertenece al formulario de abajo aunque no esté dentro de él *@
+                        <td><input type="checkbox" name="LoteIds" value="@lote.Id" form="form-remesa" aria-label="Seleccionar lote @lote.Id" /></td>
+                    }
+                    <td>@lote.Id</td>
+                    <td>@lote.Proceso</td>
+                    <td>@lote.Ejercicio</td>
+                    <td>@lote.Descripcion</td>
+                    <td>@lote.Tipo</td>
+                    <td class="numero">@lote.NumeroNotificaciones</td>
+                    @if (Model.ColumnaEstado) { <td><span class="etiqueta lote-@lote.Estado.ToString().ToLowerInvariant()">@lote.Estado</span></td> }
+                    @if (Model.ColumnaRemesa) { <td>@(lote.Remesa ?? "—")</td> }
+                    @if (Model.ColumnaValidacion)
+                    {
+                        <td>@(lote.FechaValidacion?.ToLocalTime().ToString("dd/MM/yyyy") ?? "—")</td>
+                    }
+                    else
+                    {
+                        <td>@lote.FechaAlta.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                    }
+                    @if (Model.ColumnaValidar)
+                    {
+                        <td>
+                            <form asp-action="Validar" asp-route-id="@lote.Id" method="post">
+                                <input type="hidden" name="volver" value="@Model.UrlVolver" />
+                                <button type="submit" class="boton-pequeno">Validar</button>
+                            </form>
+                        </td>
+                    }
+                    @if (Model.ColumnaBorrar)
+                    {
+                        <td>
+                            @* data-confirmar: lotes.js pide confirmación antes de enviar (antes: modalConfirmacion(...) con onclick) *@
+                            <form asp-action="Borrar" asp-route-id="@lote.Id" method="post" data-confirmar="Se va a borrar el lote @lote.Id. ¿Continuar?">
+                                <input type="hidden" name="volver" value="@Model.UrlVolver" />
+                                <button type="submit" class="boton-pequeno">Borrar</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav class="paginacion" aria-label="Paginación">
+        @if (pagina.HayAnterior)
+        {
+            <a asp-action="Index" asp-all-route-data="Model.RutaPagina(pagina.NumeroPagina - 1)" data-pagina>← Anterior</a>
+        }
+        <span>Página @pagina.NumeroPagina de @pagina.TotalPaginas · @pagina.TotalElementos lotes</span>
+        @if (pagina.HaySiguiente)
+        {
+            <a asp-action="Index" asp-all-route-data="Model.RutaPagina(pagina.NumeroPagina + 1)" data-pagina>Siguiente →</a>
+        }
+    </nav>
+
+    @if (Model.ColumnaSeleccion)
+    {
+        @* Antes: el JavaScript recorría la tabla ($("#gridLotes td:nth-child(2)")), montaba una lista JSON y la enviaba por AJAX.
+           Ahora: un formulario normal. Las casillas marcadas llegan como LoteIds=3&LoteIds=7 y el model binding las convierte en List<int>. *@
+        <form asp-action="CrearRemesa" method="post" id="form-remesa" class="filtro" data-confirmar-remesa>
+            <input type="hidden" name="volver" value="@Model.UrlVolver" />
+            <label for="Nombre">Nombre remesa:</label>
+            <input id="Nombre" name="Nombre" maxlength="@Remesa.NombreLongitudMaxima" required />
+            <button type="submit" class="boton">Crear remesa</button>
+        </form>
+    }
+}

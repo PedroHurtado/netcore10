@@ -1,0 +1,79 @@
+@* Caso práctico Noticom: la vista Lote/Index.cshtml de MVC 5 migrada. Compárese con docs/day-05/legacy/noticom/Index.cshtml *@
+@model LotesViewModel
+@{
+    ViewData["Title"] = $"{Model.Titulo} · Noticom";
+    var filtro = Model.Filtro;
+}
+
+@* Antes: cuatro if (Model.TipoEjecucion == "c") ... para elegir el <h1>. Ahora el título lo da el ViewModel. *@
+<h1>@Model.Titulo <small>· Noticom migrado</small></h1>
+
+<nav class="pestanas" aria-label="Pantallas de lotes">
+    @foreach (var modo in Enum.GetValues<ModoLotes>())
+    {
+        <a asp-action="Index" asp-route-modo="@modo" class="@(modo == Model.Modo ? "activa" : null)">@modo</a>
+    }
+    <a asp-action="Remesas">Remesas</a>
+</nav>
+
+@*
+    Antes: _BusquedaLotes y _BusquedaAvanzadaLotes, dos parciales con campos duplicados (Proceso / ProcesoAvanzada...)
+    que el JavaScript copiaba de uno a otro y mostraba u ocultaba con $("#BusquedaAvanzada").show().
+    Ahora: UN formulario GET. La parte avanzada va en un <details>, que el navegador abre y cierra sin JavaScript.
+*@
+<form asp-action="Index" method="get" id="filtro-lotes" class="filtro-lotes">
+    <input type="hidden" name="modo" value="@Model.Modo" />
+
+    <div class="filtro">
+        <label for="proceso">Proceso:</label>
+        <input id="proceso" name="proceso" type="number" min="1" value="@filtro.Proceso" class="corto" />
+        <label for="ejercicio">Ejercicio:</label>
+        <input id="ejercicio" name="ejercicio" type="number" min="2000" max="2100" value="@filtro.Ejercicio" class="corto" />
+        <button type="submit" class="boton-secundario">Buscar</button>
+    </div>
+
+    <details open="@filtro.EsAvanzado">
+        <summary>Búsqueda avanzada</summary>
+        <div class="filtro">
+            @if (Model.Modo == ModoLotes.Consulta)
+            {
+                @* En las demás pantallas el estado lo fija el modo (ver LotesController.CrearModeloAsync) *@
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado">
+                    <option value="">(todos)</option>
+                    @foreach (var estado in Enum.GetValues<EstadoLote>())
+                    {
+                        <option value="@estado" selected="@(filtro.Estado == estado)">@estado</option>
+                    }
+                </select>
+            }
+            <label for="tipo">Tipo:</label>
+            <select id="tipo" name="tipo">
+                <option value="">(todos)</option>
+                @foreach (var tipo in Enum.GetValues<TipoNotificacion>())
+                {
+                    <option value="@tipo" selected="@(filtro.Tipo == tipo)">@tipo</option>
+                }
+            </select>
+            @if (Model.Modo == ModoLotes.Consulta)
+            {
+                <label for="remesa">Remesa:</label>
+                <input id="remesa" name="remesa" value="@filtro.Remesa" type="search" />
+            }
+        </div>
+    </details>
+</form>
+
+@*
+    El JavaScript (wwwroot/js/noticom/lotes.js) NO contiene Razor: las URLs que necesita se publican aquí como atributos data-*.
+    Antes: var tipoEjecucion = '@Model.TipoEjecucion'; y url: urlpagina + '/Lote/ConsultaLotes' dentro del <script> de la vista.
+*@
+<div id="lotes" aria-live="polite"
+     data-url-tabla="@Url.Action("Tabla")"
+     data-url-index="@Url.Action("Index")">
+    <partial name="_TablaLotes" model="Model" />
+</div>
+
+@section Scripts {
+    <script src="~/js/noticom/lotes.js" asp-append-version="true"></script>
+}

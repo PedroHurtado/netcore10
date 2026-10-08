@@ -1,0 +1,8 @@
+@* Las vistas de un ÁREA no heredan el _ViewImports.cshtml de la carpeta Views raíz: cada área necesita el suyo.
+   Sin @addTagHelper, los asp-action y asp-for se pintarían tal cual en el HTML y los formularios no funcionarían. *@
+@using GestorIncidencias.Web
+@using GestorIncidencias.Web.Areas.Sirei.Models
+@using GestorIncidencias.Application.Comun
+@using GestorIncidencias.Application.Expedientes
+@using GestorIncidencias.Domain.Expedientes
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

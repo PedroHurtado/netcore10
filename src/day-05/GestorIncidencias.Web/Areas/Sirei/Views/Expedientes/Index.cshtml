@@ -1,0 +1,72 @@
+@* Caso práctico SIREI: BuscarExpedientes.aspx convertida. Compárese con docs/day-05/legacy/sirei/BuscarExpedientes.aspx *@
+@model ListadoExpedientesViewModel
+@{
+    ViewData["Title"] = "Expedientes · SIREI";
+    var pagina = Model.Pagina;
+}
+
+<h1>Expedientes <small>· SIREI migrado</small></h1>
+
+<div class="barra">
+    @* Antes: txtBuscar + ddlEstado (AutoPostBack) + btnBuscar, con el estado en el ViewState.
+       Ahora: un formulario GET. La búsqueda queda en la URL: se puede guardar, compartir y volver atrás. *@
+    <form asp-action="Index" method="get" class="filtro">
+        <label for="texto">Buscar:</label>
+        <input id="texto" name="texto" value="@Model.FiltroTexto" type="search" placeholder="Número, titular o asunto" />
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado">
+            <option value="">(todos)</option>
+            @foreach (var estado in Enum.GetValues<EstadoExpediente>())
+            {
+                <option value="@estado" selected="@(Model.FiltroEstado == estado)">@estado</option>
+            }
+        </select>
+        <button type="submit" class="boton-secundario">Buscar</button>
+    </form>
+</div>
+
+@if (pagina.TotalElementos == 0)
+{
+    <p class="vacio">No hay expedientes que cumplan el filtro.</p>
+}
+else
+{
+    @* Antes: <asp:GridView AllowPaging="true"> con BoundField y HyperLinkField a ExpedienteDetalle.aspx?id={0} *@
+    <table>
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Titular</th>
+                <th>Asunto</th>
+                <th>Estado</th>
+                <th class="numero">Trám. pend.</th>
+                <th>Modificado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var expediente in pagina.Elementos)
+            {
+                <tr>
+                    <td><a asp-action="Detalle" asp-route-id="@expediente.Id">@expediente.Numero</a></td>
+                    <td>@expediente.Titular</td>
+                    <td>@expediente.Asunto</td>
+                    <td><partial name="_EstadoExpediente" model="expediente.Estado" /></td>
+                    <td class="numero">@expediente.TramitesPendientes</td>
+                    <td>@expediente.FechaModificacion.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav class="paginacion" aria-label="Paginación">
+        @if (pagina.HayAnterior)
+        {
+            <a asp-action="Index" asp-route-texto="@Model.FiltroTexto" asp-route-estado="@Model.FiltroEstado" asp-route-pagina="@(pagina.NumeroPagina - 1)">← Anterior</a>
+        }
+        <span>Página @pagina.NumeroPagina de @pagina.TotalPaginas · @pagina.TotalElementos expedientes</span>
+        @if (pagina.HaySiguiente)
+        {
+            <a asp-action="Index" asp-route-texto="@Model.FiltroTexto" asp-route-estado="@Model.FiltroEstado" asp-route-pagina="@(pagina.NumeroPagina + 1)">Siguiente →</a>
+        }
+    </nav>
+}

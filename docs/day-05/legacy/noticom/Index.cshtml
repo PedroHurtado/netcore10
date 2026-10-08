@@ -1,0 +1,126 @@
+@* Views/Lote/Index.cshtml de Noticom (MVC 5), recortada. La vista completa está en examples/prueba.txt *@
+@model Noticom.Web.Models.LoteModel
+
+<div class="row espacioarriba">
+    <div class="col-lg-12">
+        @{
+            if (Model.TipoEjecucion == "c") { <h1 class="titulo"><span>Consulta de lotes</span></h1> }
+            else if (Model.TipoEjecucion == "v") { <h1 class="titulo"><span>Lotes pendientes de validación</span></h1> }
+            else if (Model.TipoEjecucion == "cr") { <h1 class="titulo"><span>Crear remesas</span></h1> }
+            else if (Model.TipoEjecucion == "b") { <h1 class="titulo"><span>Borrar lotes</span></h1> }
+        }
+    </div>
+</div>
+
+@* 🚩 Dos parciales con los mismos campos (Proceso / ProcesoAvanzada, Ejercicio / EjercicioAvanzada...) *@
+@Html.Partial("_BusquedaLotes", Model)
+@Html.Partial("_BusquedaAvanzadaLotes", Model)
+
+<div class="row justify-content-center espacioarriba">
+    <div class="col-lg-8">
+        <div id="GridviewLotes"></div>
+        @* 🚩 style inline: una CSP estricta (style-src-attr 'none') lo bloquea *@
+        <div class="row text-center" id="InformacionGridviewVacio" style="display:none;">
+            <div class="col-lg-2"><div class="negrita">- Sin datos</div></div>
+        </div>
+    </div>
+</div>
+
+@if (Model.TipoEjecucion == "cr")
+{
+    <div class="row espacioarriba">
+        <div class="col-lg-12 text-center">
+            @Html.Label("Nombreremesa", "Nombre remesa", new { id = "lblNombreremesa" })
+            @Html.TextBoxFor(m => m.Nombreremesa, new { @class = "form-control", @style = "width:250px;" })
+            <button class="btn btn-primary" id="BtnCrearRemesas" data-toggle="modal" data-target="#myModalConfirmacion">Crear remesa</button>
+        </div>
+    </div>
+}
+
+@* 🚩 JavaScript inline con Razor dentro: no se puede mover a un .js ni cachear, y la CSP lo bloquea *@
+<script type='text/javascript'>
+    $(document).ready(function () {
+        CargarGridViewLotes();
+    });
+
+    var tipoEjecucion = '@Model.TipoEjecucion';   // 🚩 Razor dentro del JavaScript
+
+    // 🚩 Columnas ocultadas POR NÚMERO al terminar cada AJAX: si se añade una columna, se descoloca todo
+    $(document).ajaxStop(function () {
+        if (tipoEjecucion == "v") {
+            ocultarColumnaGridview(1, 'gridLotes'); ocultarColumnaGridview(11, 'gridLotes');
+            ocultarColumnaGridview(12, 'gridLotes'); ocultarColumnaGridview(15, 'gridLotes');
+        }
+        if (tipoEjecucion == "c") {
+            ocultarColumnaGridview(1, 'gridLotes'); ocultarColumnaGridview(14, 'gridLotes'); ocultarColumnaGridview(15, 'gridLotes');
+        }
+        if (tipoEjecucion == "cr") {
+            ocultarColumnaGridview(12, 'gridLotes'); ocultarColumnaGridview(14, 'gridLotes'); ocultarColumnaGridview(15, 'gridLotes');
+        }
+        if (tipoEjecucion == "b") {
+            ocultarColumnaGridview(1, 'gridLotes'); ocultarColumnaGridview(12, 'gridLotes'); ocultarColumnaGridview(14, 'gridLotes');
+        }
+    });
+
+    $('#BtnBuscarLotes').click(function () {
+        consultaLotes($("#Proceso").val(), $("#Ejercicio").val(), '', '', '', $("#Nombreremesa").val());
+    });
+
+    $('#BtnCrearRemesas').click(function () { crearRemesa(); });
+
+    function CargarGridViewLotes() {
+        consultaLotes(@Model.Proceso, '@Model.Ejercicio', '', '', '');   // 🚩 5 argumentos para una función de 6
+    }
+
+    function consultaLotes(_proceso, _ejercicio, _estado, _pago, _tipo, _remesa) {
+        $("#loading").show();
+
+        // 🚩 El filtro se guarda en sessionStorage para "recordarlo" al volver: la URL no refleja la búsqueda
+        sessionStorage["FiltroLotes"] = JSON.stringify({ proceso: _proceso, ejercicio: _ejercicio, estado: _estado,
+                                                        pago: _pago, tipo: _tipo, remesa: _remesa });
+
+        $.ajax({
+            url: urlpagina + '/Lote/ConsultaLotes',   // 🚩 variable global urlpagina definida en el _Layout
+            type: 'POST',
+            dataType: "html",
+            data: { proceso: _proceso, ejercicio: _ejercicio, estado: _estado, pago: _pago, tipo: _tipo,
+                    tipoEjecucion: tipoEjecucion, remesa: _remesa },
+            success: function (result) {
+                $('#GridviewLotes').html(result);
+                if ($('#GridviewLotes tr').length == 1) { $("#InformacionGridviewVacio").show(); }
+                else { $("#InformacionGridviewVacio").hide(); }
+                $("#loading").hide();
+            },
+            statusCode: {
+                200: function (result) {
+                    // 🚩 Detección de sesión caducada buscando un texto en una respuesta 200
+                    if (result.indexOf("_Logon_") > 0) { window.location.href = urlpagina + '/Login'; }
+                }
+            }
+        });
+    }
+
+    function ocultarColumnaGridview(idColumna, idGridView) {
+        $("#" + idGridView + " th:nth-child(" + idColumna + ")").hide();
+        $("#" + idGridView + " td:nth-child(" + idColumna + ")").hide();
+    }
+
+    function crearRemesa() {
+        var list = [];
+        if ($('#Nombreremesa').val() == '') { mostrarTextoError('- El nombre de la remesa es obligatorio.'); return; }
+
+        // 🚩 Se leen los Id de la SEGUNDA celda de cada fila: depende del orden de las columnas
+        $("#gridLotes td:nth-child(2)").each(function () {
+            var _Id = $(this).text();
+            if ($('#chkBoxSel_' + _Id).is(":checked")) { list.push({ Id: _Id }); }
+        });
+
+        if (list.length == 0) { mostrarTextoError('- No se ha seleccionado ningún lote.'); return; }
+        modalConfirmacion('Crear remesa', 'Se va a crear una remesa a partir de ' + list.length + ' lotes',
+                          tipoEjecucion, 0, list, $('#Nombreremesa').val(), 0, 0);
+    }
+
+    function borrarLote(idLote) {
+        modalConfirmacion('Borrar lote', 'Se va a borrar el lote', tipoEjecucion, idLote, null, '', 0, 0);
+    }
+</script>

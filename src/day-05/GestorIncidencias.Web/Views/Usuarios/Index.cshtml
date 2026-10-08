@@ -1,0 +1,35 @@
+@model IReadOnlyList<UsuarioViewModel>
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<h1>Usuarios <small>· solo Administrador</small></h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Roles</th>
+            <th class="numero">Intentos fallidos</th>
+            <th>Bloqueado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.Usuario</td>
+                <td>@(usuario.NombreCompleto ?? "—")</td>
+                <td>@(usuario.Roles.Count == 0 ? "—" : string.Join(", ", usuario.Roles))</td>
+                <td class="numero">@usuario.IntentosFallidos</td>
+                <td>@(usuario.Bloqueado ? "Sí" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p class="nota">
+    Prueba: cierra la sesión, intenta entrar 5 veces como <code>luis@demo.local</code> con una contraseña incorrecta
+    y vuelve aquí como administrador. La cuenta aparecerá bloqueada durante 5 minutos (<code>IdentityOptions.Lockout</code>).
+</p>

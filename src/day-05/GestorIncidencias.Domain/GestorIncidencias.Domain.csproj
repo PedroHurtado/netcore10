@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    DOMINIO: el centro de la arquitectura.
+    No referencia a NINGÚN otro proyecto ni a ningún paquete NuGet
+    (ni EF Core, ni ASP.NET Core). Solo C# y la biblioteca base de .NET.
+  -->
+
+</Project>

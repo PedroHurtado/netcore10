@@ -1,0 +1,3 @@
+@* Vista parcial reutilizable: etiqueta de color para un estado. Uso: <partial name="_Estado" model="incidencia.Estado" /> *@
+@model EstadoIncidencia
+<span class="etiqueta estado-@Model.ToString().ToLowerInvariant()">@Model</span>

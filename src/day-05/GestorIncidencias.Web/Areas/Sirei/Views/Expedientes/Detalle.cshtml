@@ -1,0 +1,119 @@
+@* Caso práctico SIREI: ExpedienteDetalle.aspx convertida. Compárese con docs/day-05/legacy/sirei/ExpedienteDetalle.aspx *@
+@model FichaExpedienteViewModel
+@{
+    var expediente = Model.Expediente;
+    var cerrado = expediente.Estado == EstadoExpediente.Cerrado;
+    ViewData["Title"] = $"Expediente {expediente.Numero}";
+}
+
+<p><a asp-action="Index">← Volver a la búsqueda</a></p>
+
+<h1>Expediente @expediente.Numero</h1>
+
+<dl class="ficha">
+    <dt>Titular</dt>
+    <dd>@expediente.Titular</dd>
+
+    <dt>Asunto</dt>
+    <dd>@expediente.Asunto</dd>
+
+    <dt>Estado actual</dt>
+    <dd><partial name="_EstadoExpediente" model="expediente.Estado" /></dd>
+
+    <dt>Alta</dt>
+    <dd>@expediente.FechaAlta.ToLocalTime().ToString("dd/MM/yyyy")</dd>
+
+    <dt>Última modificación</dt>
+    <dd>@expediente.FechaModificacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm") <span class="nota">(versión @expediente.Version)</span></dd>
+</dl>
+
+@if (cerrado)
+{
+    <p class="nota">El expediente está cerrado: no admite cambios.</p>
+    @if (expediente.Observaciones is not null)
+    {
+        <h2>Observaciones</h2>
+        <p class="texto-largo">@expediente.Observaciones</p>
+    }
+}
+else
+{
+    @* Antes: txtObservaciones, ddlEstado y btnGuardar, con un POST a la misma página (postback).
+       Ahora: un formulario POST a /Sirei/Expedientes/Detalle/5. El id va en la ruta (antes: ViewState["IdExpediente"]). *@
+    <h2>Datos del expediente</h2>
+    <form asp-action="Detalle" asp-route-id="@expediente.Id" method="post" class="formulario">
+        <div asp-validation-summary="ModelOnly" class="errores"></div>
+
+        @* asp-for="Formulario.X" genera name="Formulario.X": la acción POST lo enlaza con [Bind(Prefix = "Formulario")].
+           Version = la versión que el usuario está editando (concurrencia optimista: ver ExpedienteService.ActualizarAsync) *@
+        <input type="hidden" asp-for="Formulario.Version" />
+
+        <div class="campo">
+            <label asp-for="Formulario.Estado"></label>
+            @* GetEnumSelectList: las opciones llevan el valor numérico (1..4), como el ddlEstado del legacy *@
+            <select asp-for="Formulario.Estado" asp-items="Html.GetEnumSelectList<EstadoExpediente>()"></select>
+            <span asp-validation-for="Formulario.Estado" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Formulario.Observaciones"></label>
+            <textarea asp-for="Formulario.Observaciones" rows="4"></textarea>
+            <span asp-validation-for="Formulario.Observaciones" class="error-campo"></span>
+        </div>
+
+        <button type="submit" class="boton">Guardar</button>
+    </form>
+}
+
+@* Antes: <asp:GridView ID="gvTramites"> con un ButtonField CommandName="Completar" y el evento RowCommand.
+   Ahora: una tabla con un pequeño formulario POST por fila. *@
+<h2>Trámites (@expediente.Tramites.Count)</h2>
+
+@if (expediente.Tramites.Count == 0)
+{
+    <p class="vacio">El expediente no tiene trámites.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Trámite</th><th>Alta</th><th>Situación</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var tramite in expediente.Tramites)
+            {
+                <tr>
+                    <td>@tramite.Descripcion</td>
+                    <td>@tramite.FechaAlta.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (tramite.Pendiente)
+                        {
+                            <span class="etiqueta expediente-entramite">Pendiente</span>
+                        }
+                        else
+                        {
+                            <span>Completado el @tramite.FechaCompletado?.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                        }
+                    </td>
+                    <td>
+                        @if (tramite.Pendiente && !cerrado)
+                        {
+                            <form asp-action="CompletarTramite" asp-route-id="@expediente.Id" asp-route-tramiteId="@tramite.Id" method="post">
+                                <button type="submit" class="boton-pequeno">Completar</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (!cerrado)
+{
+    <form asp-action="AgregarTramite" asp-route-id="@expediente.Id" method="post" class="filtro">
+        <label for="descripcion">Nuevo trámite:</label>
+        <input id="descripcion" name="descripcion" maxlength="@Tramite.DescripcionLongitudMaxima" required />
+        <button type="submit" class="boton-secundario">Añadir</button>
+    </form>
+}
